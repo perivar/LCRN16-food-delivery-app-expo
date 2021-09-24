@@ -21,21 +21,35 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import TabOneScreen from '../screens/TabOneScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import {
-  RootStackParamList,
+  // RootStackParamList,
   RootTabParamList,
   RootTabScreenProps,
 } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
+import { OnBoarding, SignIn, SignUp, ForgotPassword, Otp } from '../screens';
+import CustomDrawer from '../navigation/CustomDrawer';
+
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
-const Stack = createNativeStackNavigator<RootStackParamList>();
+// const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName={'OnBoarding'}>
+      <Stack.Screen name="OnBoarding" component={OnBoarding} />
+      <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="Otp" component={Otp} />
+      <Stack.Screen name="Home" component={CustomDrawer} />
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}

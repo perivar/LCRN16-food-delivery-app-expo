@@ -29,6 +29,8 @@ import LinkingConfiguration from './LinkingConfiguration';
 
 import { OnBoarding, SignIn, SignUp, ForgotPassword, Otp } from '../screens';
 import CustomDrawer from '../navigation/CustomDrawer';
+import SimsScreen from '../screens/SimsScreen';
+import YodaScreen from '../screens/YodaScreen';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -50,6 +52,8 @@ const RootNavigator = () => {
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="Otp" component={Otp} />
       <Stack.Screen name="Home" component={CustomDrawer} />
+      <Stack.Screen name="Sims" component={SimsScreen} />
+      <Stack.Screen name="Yoda" component={YodaScreen} />
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}

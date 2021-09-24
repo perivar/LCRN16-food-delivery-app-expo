@@ -3945,6 +3945,11 @@ expo-asset@~8.3.3:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-blur@~9.0.3:
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-9.0.3.tgz#5095b5bd04d000f73b351d0e4736767b86b49bbd"
+  integrity sha512-7jMqzo53eg5t9Uc1Tg+yGu9lKL9the4CWAQO0kC6YMhrsDiB13mwOUesC+IScHDTSUKNMGcHI8kN+OmvEWfPig==
+
 expo-constants@~11.0.1:
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-11.0.2.tgz#069930145908fef7d76bf72a1a874a1d4621af82"
@@ -7240,6 +7245,13 @@ react-native-screens@~3.4.0:
   integrity sha512-cg+q9MRnVdeOcJyvJtqffoXLur/C2wHA/7IO2+FAipzTlgHbbM1mTuSM7qG+SeiQjoIs4mHOEf7A0ziPKW04sA==
   dependencies:
     warn-once "^0.1.0"
+
+react-native-sticky-parallax-header@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-sticky-parallax-header/-/react-native-sticky-parallax-header-0.4.1.tgz#c7c75544ab07e614dae4e437a370350d3527c480"
+  integrity sha512-0uUdMScV42o0uOV0krKXK3juG/ckjOA8kOrQxbcl1q6jit64hPjGBmdo2F2qwFDc3ukQKxeYOXYXsVZGoY/WSg==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-web@~0.13.12:
   version "0.13.18"

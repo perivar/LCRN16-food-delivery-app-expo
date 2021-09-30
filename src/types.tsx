@@ -16,16 +16,37 @@ declare global {
   }
 }
 
+export type CustomDrawerParamList = {
+  // default screens
+  MainLayout: undefined;
+  SignIn: undefined;
+};
+
 export type RootStackParamList = {
+  // default screens
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Modal: undefined;
   NotFound: undefined;
+  // added screens
+  // splash
+  Splash: undefined;
+  // auth
+  OnBoarding: undefined;
+  SignIn: undefined;
+  SignUp: undefined;
+  ForgotPassword: undefined;
+  Otp: undefined;
+  // app
+  Home: undefined;
+  Sims: undefined;
+  Yoda: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
 
 export type RootTabParamList = {
+  // default tabs
   TabOne: undefined;
   TabTwo: undefined;
 };

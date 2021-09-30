@@ -3,25 +3,26 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
+import * as React from 'react';
+import { ColorSchemeName, Pressable } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
 } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
 
+import { FontAwesome } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
+
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import TabOneScreen from '../screens/TabOneScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import {
-  // RootStackParamList,
+  RootStackParamList,
   RootTabParamList,
   RootTabScreenProps,
 } from '../types';
@@ -31,13 +32,17 @@ import { OnBoarding, SignIn, SignUp, ForgotPassword, Otp } from '../screens';
 import CustomDrawer from '../navigation/CustomDrawer';
 import SimsScreen from '../screens/SimsScreen';
 import YodaScreen from '../screens/YodaScreen';
+import { useEffect } from 'react';
+import { loginUser, logoutUser, User } from '../redux/slices/auth';
+import { useAppDispatch } from '../redux/store/hooks';
+import SplashScreen from '../screens/SplashScreen';
+import firebase from 'firebase';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
-// const Stack = createNativeStackNavigator<RootStackParamList>();
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
   return (
@@ -45,7 +50,8 @@ const RootNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName={'OnBoarding'}>
+      initialRouteName={'Splash'}>
+      <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
@@ -131,6 +137,29 @@ const TabBarIcon = (props: {
 };
 
 const AppNavigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // onAuthStateChanged returns an unsubscriber
+    const unsubscribeAuth = firebase.auth().onAuthStateChanged(authUser => {
+      console.log('AppNavigator onAuthStateChanged ... ');
+      try {
+        const user: User = {
+          uid: authUser.uid,
+          displayName: authUser.displayName,
+          email: authUser.email,
+        };
+        dispatch(loginUser(user));
+      } catch (error) {
+        console.log(error);
+        dispatch(logoutUser());
+      }
+    });
+
+    // unsubscribe auth listener on unmount
+    return unsubscribeAuth;
+  }, []);
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}

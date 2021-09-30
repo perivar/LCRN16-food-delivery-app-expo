@@ -1,12 +1,25 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import AuthLayout from './AuthLayout';
 import { FONTS, SIZES, COLORS, icons } from '../../constants';
 
 import { FormInput, TextButton, TextIconButton } from '../../components';
 import { utils } from '../../utils';
 
-const SignUp = ({ navigation }: any) => {
+import * as AppleAuthentication from 'expo-apple-authentication';
+import useFirebaseAuth from '../../hooks/useFirebaseAuth';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../types';
+import Auth from '../../lib/auth';
+
+const auth = new Auth();
+
+const SignUp = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const { authUser, onAppleLogin, onGoogleLogin } = useFirebaseAuth();
+
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -14,17 +27,24 @@ const SignUp = ({ navigation }: any) => {
   const [emailError, setEmailError] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
+  const [signUpError, setSignUpError] = React.useState('');
 
-  function isEnableSignUp() {
+  useEffect(() => {
+    if (authUser) {
+      navigation.navigate('Home');
+    }
+  }, [authUser]);
+
+  const isEnableSignUp = () => {
     return (
       email !== '' &&
-      username !== '' &&
+      // username !== '' &&
       password !== '' &&
       emailError === '' &&
       passwordError === '' &&
       usernameError === ''
     );
-  }
+  };
 
   return (
     <AuthLayout
@@ -75,7 +95,7 @@ const SignUp = ({ navigation }: any) => {
           }
         />
 
-        <FormInput
+        {/* <FormInput
           label="Username"
           containerStyle={{
             marginTop: SIZES.radius,
@@ -108,7 +128,7 @@ const SignUp = ({ navigation }: any) => {
               />
             </View>
           }
-        />
+        /> */}
 
         <FormInput
           label="Password"
@@ -142,6 +162,18 @@ const SignUp = ({ navigation }: any) => {
           }
         />
 
+        {signUpError !== '' && (
+          <View style={{ marginTop: SIZES.radius }}>
+            <Text
+              style={{
+                color: COLORS.red,
+                ...FONTS.body4,
+              }}>
+              {signUpError}
+            </Text>
+          </View>
+        )}
+
         {/* Sign Up & Sign In */}
         <TextButton
           label="Sign Up"
@@ -155,7 +187,18 @@ const SignUp = ({ navigation }: any) => {
               ? COLORS.primary
               : COLORS.transparentPrimary,
           }}
-          onPress={() => navigation.navigate('Otp')}
+          // onPress={() => navigation.navigate('Otp')}
+          onPress={() => {
+            auth
+              .doCreateUserWithEmailAndPassword(email, password)
+              .then(() => {
+                navigation.navigate('Home');
+              })
+              .catch((error: any) => {
+                console.log(error);
+                setSignUpError(JSON.stringify(error?.message));
+              });
+          }}
         />
 
         <View
@@ -196,7 +239,7 @@ const SignUp = ({ navigation }: any) => {
           iconStyle={{
             tintColor: COLORS.white,
           }}
-          label="Continue With Facebook"
+          label="Sign up with Facebook"
           labelStyle={{
             marginLeft: SIZES.radius,
             color: COLORS.white,
@@ -218,12 +261,30 @@ const SignUp = ({ navigation }: any) => {
           iconStyle={{
             tintColor: null,
           }}
-          label="Continue With Google"
+          label="Sign up with Google"
           labelStyle={{
             marginLeft: SIZES.radius,
           }}
-          onPress={() => console.log('Google')}
+          onPress={onGoogleLogin}
         />
+
+        {Platform.OS === 'ios' && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP
+            }
+            buttonStyle={
+              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={SIZES.radius}
+            style={{
+              height: 50,
+              alignItems: 'center',
+              marginTop: SIZES.radius,
+            }}
+            onPress={onAppleLogin}
+          />
+        )}
       </View>
     </AuthLayout>
   );

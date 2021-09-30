@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   tabsContainerStyle: {
     paddingHorizontal: 10,
   },
-  contentContiner: {
+  contentContainer: {
     height: windowHeight,
     padding: 10,
   },
@@ -97,7 +97,7 @@ const CutomHeaderScreen = () => {
   const naviagation = useNavigation();
   const back = () => naviagation.goBack();
   const renderContent = x => (
-    <View style={styles.contentContiner}>
+    <View style={styles.contentContainer}>
       <Text style={styles.contentText}>{x}</Text>
     </View>
   );

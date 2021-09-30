@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
-export interface IState {
+export interface ITabState {
   selectedTab: string;
 }
 
-const initialState: IState = {
+const initialState: ITabState = {
   selectedTab: '',
 };
 

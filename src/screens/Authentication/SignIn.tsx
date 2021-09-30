@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import AuthLayout from './AuthLayout';
 import { FONTS, SIZES, COLORS, icons } from '../../constants';
 
@@ -11,7 +11,20 @@ import {
 } from '../../components';
 import { utils } from '../../utils';
 
-const SignIn = ({ navigation }: any) => {
+import * as AppleAuthentication from 'expo-apple-authentication';
+import useFirebaseAuth from '../../hooks/useFirebaseAuth';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../types';
+import Auth from '../../lib/auth';
+
+const auth = new Auth();
+
+const SignIn = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const { authUser, onAppleLogin, onGoogleLogin } = useFirebaseAuth();
+
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
 
@@ -20,9 +33,17 @@ const SignIn = ({ navigation }: any) => {
 
   const [saveMe, setSaveMe] = React.useState(false);
 
-  function isEnableSignIn() {
+  const [signInError, setSignInError] = React.useState('');
+
+  useEffect(() => {
+    if (authUser) {
+      navigation.navigate('Home');
+    }
+  }, [authUser]);
+
+  const isEnableSignIn = () => {
     return email !== '' && password !== '' && emailError === '';
-  }
+  };
 
   return (
     <AuthLayout
@@ -108,7 +129,7 @@ const SignIn = ({ navigation }: any) => {
             value={saveMe}
             onChange={(value: boolean) => {
               setSaveMe(value);
-              navigation.navigate('Home');
+              // navigation.navigate('Home');
             }}
           />
 
@@ -125,6 +146,18 @@ const SignIn = ({ navigation }: any) => {
           />
         </View>
 
+        {signInError !== '' && (
+          <View style={{ marginTop: SIZES.radius }}>
+            <Text
+              style={{
+                color: COLORS.red,
+                ...FONTS.body4,
+              }}>
+              {signInError}
+            </Text>
+          </View>
+        )}
+
         {/* Sign In */}
         <TextButton
           label="Sign In"
@@ -138,7 +171,18 @@ const SignIn = ({ navigation }: any) => {
               ? COLORS.primary
               : COLORS.transparentPrimary,
           }}
-          onPress={() => navigation.navigate('Home')}
+          // onPress={() => navigation.navigate('Home')}
+          onPress={() => {
+            auth
+              .doSignInWithEmailAndPassword(email, password)
+              .then(() => {
+                navigation.navigate('Home');
+              })
+              .catch((error: any) => {
+                console.log(error);
+                setSignInError(JSON.stringify(error?.message));
+              });
+          }}
         />
 
         {/* Sign Up */}
@@ -186,7 +230,7 @@ const SignIn = ({ navigation }: any) => {
           iconStyle={{
             tintColor: COLORS.white,
           }}
-          label="Continue With Facebook"
+          label="Sign in with Facebook"
           labelStyle={{
             marginLeft: SIZES.radius,
             color: COLORS.white,
@@ -208,12 +252,30 @@ const SignIn = ({ navigation }: any) => {
           iconStyle={{
             tintColor: null,
           }}
-          label="Continue With Google"
+          label="Sign in with Google"
           labelStyle={{
             marginLeft: SIZES.radius,
           }}
-          onPress={() => console.log('Google')}
+          onPress={onGoogleLogin}
         />
+
+        {Platform.OS === 'ios' && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+            }
+            buttonStyle={
+              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={SIZES.radius}
+            style={{
+              height: 50,
+              alignItems: 'center',
+              marginTop: SIZES.radius,
+            }}
+            onPress={onAppleLogin}
+          />
+        )}
       </View>
     </AuthLayout>
   );

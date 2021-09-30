@@ -5,8 +5,16 @@ import { SIZES, COLORS, icons } from '../../constants';
 
 import { FormInput, TextButton } from '../../components';
 import { utils } from '../../utils';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../types';
+import Auth from '../../lib/auth';
 
-const ForgotPassword = ({ navigation }: any) => {
+const auth = new Auth();
+
+const ForgotPassword = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
 
@@ -76,7 +84,10 @@ const ForgotPassword = ({ navigation }: any) => {
             ? COLORS.primary
             : COLORS.transparentPrimary,
         }}
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          auth.doPasswordReset(email);
+          navigation.goBack();
+        }}
       />
     </AuthLayout>
   );

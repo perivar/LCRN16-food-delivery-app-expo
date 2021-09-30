@@ -17,6 +17,9 @@ import {
 } from '../constants';
 import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typescript/src/types';
 import { connector, PropsFromRedux } from '../redux/store/connector';
+import { logoutUser } from '../redux/slices/auth';
+import { useAppDispatch } from '../redux/store/hooks';
+import { CustomDrawerParamList } from '../types';
 
 type ICustomDrawer = PropsFromRedux;
 type ICustomDrawerContent = PropsFromRedux & DrawerContentComponentProps;
@@ -28,7 +31,7 @@ interface ICustomDrawerItem {
   onPress?(): void;
 }
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<CustomDrawerParamList>();
 
 const CustomDrawerItem = ({
   label,
@@ -73,6 +76,8 @@ const CustomDrawerContent = ({
   selectedTab,
   setSelectedTab,
 }: ICustomDrawerContent) => {
+  const dispatch = useAppDispatch();
+
   return (
     <DrawerContentScrollView
       scrollEnabled={true}
@@ -188,7 +193,15 @@ const CustomDrawerContent = ({
           style={{
             marginBottom: SIZES.padding,
           }}>
-          <CustomDrawerItem label="Logout" icon={icons.logout} />
+          <CustomDrawerItem
+            label="Logout"
+            icon={icons.logout}
+            onPress={() => {
+              dispatch(logoutUser());
+              navigation.closeDrawer();
+              navigation.navigate('SignIn');
+            }}
+          />
         </View>
       </View>
     </DrawerContentScrollView>

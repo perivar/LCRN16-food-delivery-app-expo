@@ -6,8 +6,10 @@ import AuthLayout from './AuthLayout';
 import { FONTS, SIZES, COLORS } from '../../constants';
 
 import { TextButton } from '../../components';
+import { useNavigation } from '@react-navigation/native';
 
-const Otp = ({ navigation }: any) => {
+const Otp = () => {
+  const navigation = useNavigation();
   const [timer, setTimer] = React.useState(60);
 
   React.useEffect(() => {

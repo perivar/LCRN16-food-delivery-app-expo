@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   View,
   Text,
@@ -8,15 +7,27 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { TextButton } from '../../components';
 import { constants, images, FONTS, SIZES, COLORS } from '../../constants';
+import { isUserAuthenticatedSelector } from '../../redux/slices/auth';
+import { useAppSelector } from '../../redux/store/hooks';
+import { RootStackParamList } from '../../types';
 
-const OnBoarding = ({ navigation }: any) => {
+const OnBoarding = () => {
   // set scroll x as ref to avoid unnecessary render, instead of just new Animated.Value(0)
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const flatListRef = React.useRef<FlatList>();
 
   const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const isUserAuthenticated = useAppSelector(isUserAuthenticatedSelector);
+
+  React.useEffect(() => {
+    if (isUserAuthenticated) navigation.replace('Home');
+  }, [isUserAuthenticated]);
 
   const onViewChangeRef = React.useRef(({ viewableItems, _ }: any) => {
     setCurrentIndex(viewableItems[0].index);

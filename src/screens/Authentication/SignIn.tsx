@@ -25,8 +25,12 @@ const auth = new Auth();
 const SignIn = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const dispatch = useAppDispatch();
-  const { onAppleLogin, onGoogleLogin, onFacebookLogin } = useFirebaseAuth();
+  const {
+    onAppleLogin,
+    onGoogleLogin,
+    onFacebookLogin,
+    onEmailAndPasswordLogin,
+  } = useFirebaseAuth();
 
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
@@ -35,8 +39,6 @@ const SignIn = () => {
   const [showPass, setShowPass] = React.useState(false);
 
   const [saveMe, setSaveMe] = React.useState(false);
-
-  const [signInError, setSignInError] = React.useState('');
 
   const isEnableSignIn = () => {
     return email !== '' && password !== '' && emailError === '';
@@ -142,18 +144,6 @@ const SignIn = () => {
           />
         </View>
 
-        {signInError !== '' && (
-          <View style={{ marginTop: SIZES.radius }}>
-            <Text
-              style={{
-                color: COLORS.red,
-                ...FONTS.body4,
-              }}>
-              {signInError}
-            </Text>
-          </View>
-        )}
-
         {/* Sign In */}
         <TextButton
           label="Sign In"
@@ -167,24 +157,7 @@ const SignIn = () => {
               ? COLORS.primary
               : COLORS.transparentPrimary,
           }}
-          onPress={() => {
-            auth
-              .doSignInWithEmailAndPassword(email, password)
-              .then(data => {
-                setSignInError(undefined);
-                const providerUser = data.user.providerData[0];
-                const user: User = {
-                  uid: providerUser.uid,
-                  displayName: providerUser.displayName,
-                  email: providerUser.email,
-                };
-                dispatch(loginUser(user));
-              })
-              .catch((error: any) => {
-                console.log(error);
-                setSignInError(JSON.stringify(error?.message));
-              });
-          }}
+          onPress={() => onEmailAndPasswordLogin(email, password)}
         />
 
         {/* Sign Up */}

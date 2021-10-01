@@ -20,8 +20,12 @@ const auth = new Auth();
 const SignUp = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const dispatch = useAppDispatch();
-  const { onAppleLogin, onGoogleLogin, onFacebookLogin } = useFirebaseAuth();
+  const {
+    onAppleLogin,
+    onGoogleLogin,
+    onFacebookLogin,
+    onEmailAndPasswordSignup,
+  } = useFirebaseAuth();
 
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
@@ -30,7 +34,6 @@ const SignUp = () => {
   const [emailError, setEmailError] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
-  const [signUpError, setSignUpError] = React.useState('');
 
   const isEnableSignUp = () => {
     return (
@@ -159,18 +162,6 @@ const SignUp = () => {
           }
         />
 
-        {signUpError !== '' && (
-          <View style={{ marginTop: SIZES.radius }}>
-            <Text
-              style={{
-                color: COLORS.red,
-                ...FONTS.body4,
-              }}>
-              {signUpError}
-            </Text>
-          </View>
-        )}
-
         {/* Sign Up & Sign In */}
         <TextButton
           label="Sign Up"
@@ -185,19 +176,7 @@ const SignUp = () => {
               : COLORS.transparentPrimary,
           }}
           // onPress={() => navigation.navigate('Otp')}
-          onPress={() => {
-            auth
-              .doCreateUserWithEmailAndPassword(email, password)
-              .then(() => {
-                setSignUpError(undefined);
-                // Notice Firebase automatically signs user in when their account is created
-                // so dispatch loginUser is not needed
-              })
-              .catch((error: any) => {
-                console.log(error);
-                setSignUpError(JSON.stringify(error?.message));
-              });
-          }}
+          onPress={() => onEmailAndPasswordSignup(email, password)}
         />
 
         <View

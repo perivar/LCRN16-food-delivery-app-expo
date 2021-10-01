@@ -181,6 +181,43 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
     }
   }, [firebaseLogin]);
 
+  const onEmailAndPasswordSignup = useCallback(
+    (email: string, password: string) => {
+      auth
+        .doCreateUserWithEmailAndPassword(email, password)
+        .then(() => {
+          // Notice Firebase automatically signs user in when their account is created
+          // so dispatch loginUser is not needed
+        })
+        .catch((error: any) => {
+          console.log(error);
+          Alert.alert('Login failed. ' + error);
+        });
+    },
+    [googlePromptAsync]
+  );
+
+  const onEmailAndPasswordLogin = useCallback(
+    (email: string, password: string) => {
+      auth
+        .doSignInWithEmailAndPassword(email, password)
+        .then(data => {
+          const providerUser = data.user.providerData[0];
+          const user: User = {
+            uid: providerUser.uid,
+            displayName: providerUser.displayName,
+            email: providerUser.email,
+          };
+          dispatch(loginUser(user));
+        })
+        .catch(error => {
+          console.log(error);
+          Alert.alert('Login failed. ' + error);
+        });
+    },
+    [googlePromptAsync]
+  );
+
   const onLogout = useCallback(async () => {
     await auth.logout();
     await removeItem(storageKey.USER_ID_KEY);
@@ -201,6 +238,8 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
     onAppleLogin,
     onGoogleLogin,
     onFacebookLogin,
+    onEmailAndPasswordSignup,
+    onEmailAndPasswordLogin,
     onLogout,
   };
 };

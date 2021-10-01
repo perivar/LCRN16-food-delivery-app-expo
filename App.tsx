@@ -7,12 +7,10 @@ import useCachedResources from './src/hooks/useCachedResources';
 import useColorScheme from './src/hooks/useColorScheme';
 import AppNavigator from './src/navigation/AppNavigator';
 import store from './src/redux/store/store';
-import useFirebaseAuth from './src/hooks/useFirebaseAuth';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  // useFirebaseAuth();
 
   if (!isLoadingComplete) {
     return null;

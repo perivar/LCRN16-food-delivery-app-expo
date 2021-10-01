@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from './system/firebase';
 import { storageKey, setItem, getItem, removeItem } from './storage';
 import dayjs from 'dayjs';
 

@@ -17,13 +17,16 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
 import Auth from '../../lib/auth';
+import { loginUser, User } from '../../redux/slices/auth';
+import { useAppDispatch } from '../../redux/store/hooks';
 
 const auth = new Auth();
 
 const SignIn = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const { authUser, onAppleLogin, onGoogleLogin } = useFirebaseAuth();
+  const dispatch = useAppDispatch();
+  const { onAppleLogin, onGoogleLogin, onFacebookLogin } = useFirebaseAuth();
 
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
@@ -34,12 +37,6 @@ const SignIn = () => {
   const [saveMe, setSaveMe] = React.useState(false);
 
   const [signInError, setSignInError] = React.useState('');
-
-  useEffect(() => {
-    if (authUser) {
-      navigation.navigate('Home');
-    }
-  }, [authUser]);
 
   const isEnableSignIn = () => {
     return email !== '' && password !== '' && emailError === '';
@@ -129,7 +126,6 @@ const SignIn = () => {
             value={saveMe}
             onChange={(value: boolean) => {
               setSaveMe(value);
-              // navigation.navigate('Home');
             }}
           />
 
@@ -171,12 +167,18 @@ const SignIn = () => {
               ? COLORS.primary
               : COLORS.transparentPrimary,
           }}
-          // onPress={() => navigation.navigate('Home')}
           onPress={() => {
             auth
               .doSignInWithEmailAndPassword(email, password)
-              .then(() => {
-                navigation.navigate('Home');
+              .then(data => {
+                setSignInError(undefined);
+                const providerUser = data.user.providerData[0];
+                const user: User = {
+                  uid: providerUser.uid,
+                  displayName: providerUser.displayName,
+                  email: providerUser.email,
+                };
+                dispatch(loginUser(user));
               })
               .catch((error: any) => {
                 console.log(error);
@@ -235,7 +237,7 @@ const SignIn = () => {
             marginLeft: SIZES.radius,
             color: COLORS.white,
           }}
-          onPress={() => console.log('FB')}
+          onPress={onFacebookLogin}
         />
 
         {/* Google */}

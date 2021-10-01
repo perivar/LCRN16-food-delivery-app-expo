@@ -14,13 +14,11 @@ export type User = {
 
 export interface AuthState {
   authenticated?: boolean;
-  error?: SerializedError;
   user?: User;
 }
 
 const initialState: AuthState = {
   authenticated: undefined,
-  error: undefined,
   user: undefined,
 };
 
@@ -31,12 +29,10 @@ const authSlice = createSlice({
     loginUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
       state.authenticated = true;
-      state.error = undefined;
     },
     logoutUser: state => {
       state.user = undefined;
       state.authenticated = false;
-      state.error = undefined;
     },
   },
 });
@@ -58,10 +54,6 @@ export const isUserAuthenticatedSelector = createSelector(
     return auth.authenticated;
   }
 );
-
-export const errorSelector = createSelector(authSelector, auth => {
-  return auth.error;
-});
 
 // export The reducer
 const userReducer = authSlice.reducer;

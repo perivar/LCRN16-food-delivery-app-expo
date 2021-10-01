@@ -4,28 +4,18 @@
  *
  */
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
 } from '@react-navigation/native';
 
-import { FontAwesome } from '@expo/vector-icons';
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import {
-  RootStackParamList,
-  RootTabParamList,
-  RootTabScreenProps,
-} from '../types';
+import { RootStackParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
 import { OnBoarding, SignIn, SignUp, ForgotPassword, Otp } from '../screens';
@@ -33,10 +23,17 @@ import CustomDrawer from '../navigation/CustomDrawer';
 import SimsScreen from '../screens/SimsScreen';
 import YodaScreen from '../screens/YodaScreen';
 import { useEffect } from 'react';
-import { loginUser, logoutUser, User } from '../redux/slices/auth';
-import { useAppDispatch } from '../redux/store/hooks';
+import {
+  loginUser,
+  logoutUser,
+  User,
+  userSelector,
+} from '../redux/slices/auth';
+import { useAppDispatch, useAppSelector } from '../redux/store/hooks';
 import SplashScreen from '../screens/SplashScreen';
-import firebase from 'firebase';
+import firebase from '../lib/system/firebase';
+import useFirebaseAuth from '../hooks/useFirebaseAuth';
+import BottomTabNavigator from './BottomTabNavigator';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -45,120 +42,72 @@ import firebase from 'firebase';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-      initialRouteName={'Splash'}>
-      <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="OnBoarding" component={OnBoarding} />
-      <Stack.Screen name="SignIn" component={SignIn} />
-      <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <Stack.Screen name="Otp" component={Otp} />
-      <Stack.Screen name="Home" component={CustomDrawer} />
-      <Stack.Screen name="Sims" component={SimsScreen} />
-      <Stack.Screen name="Yoda" component={YodaScreen} />
-      <Stack.Screen
-        name="Root"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: 'Oops!' }}
-      />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-    </Stack.Navigator>
-  );
-};
-
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
-
-const BottomTabNavigator = () => {
-  const colorScheme = useColorScheme();
-
-  return (
-    <BottomTab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}
-      initialRouteName="TabOne">
-      <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
-      />
-      <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="cloud" color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
-  );
-};
-
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-const TabBarIcon = (props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) => {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-};
-
-const AppNavigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
+  const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber
     const unsubscribeAuth = firebase.auth().onAuthStateChanged(authUser => {
-      console.log('AppNavigator onAuthStateChanged ... ');
-      try {
+      console.log('AppNavigator - onAuthStateChanged');
+      if (authUser) {
         const user: User = {
           uid: authUser.uid,
           displayName: authUser.displayName,
           email: authUser.email,
         };
         dispatch(loginUser(user));
-      } catch (error) {
-        console.log(error);
+      } else {
         dispatch(logoutUser());
       }
     });
-
     // unsubscribe auth listener on unmount
     return unsubscribeAuth;
   }, []);
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      {user ? (
+        <>
+          <Stack.Screen name="Home" component={CustomDrawer} />
+          <Stack.Screen name="Sims" component={SimsScreen} />
+          <Stack.Screen name="Yoda" component={YodaScreen} />
+          <Stack.Screen
+            name="Root"
+            component={BottomTabNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="NotFound"
+            component={NotFoundScreen}
+            options={{ title: 'Oops!' }}
+          />
+          <Stack.Group screenOptions={{ presentation: 'modal' }}>
+            <Stack.Screen name="Modal" component={ModalScreen} />
+          </Stack.Group>
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="OnBoarding" component={OnBoarding} />
+          <Stack.Screen name="SignIn" component={SignIn} />
+          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="Otp" component={Otp} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+};
+
+const AppNavigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
+  const { setup } = useFirebaseAuth();
+
+  if (!setup) {
+    // We haven't finished checking for user yet
+    return <SplashScreen />;
+  }
 
   return (
     <NavigationContainer

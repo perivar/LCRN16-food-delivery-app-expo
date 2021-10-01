@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from './system/firebase';
 
 export type AppConfig = {
   maintenance: boolean;

@@ -1,21 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import * as AppleAuthentication from 'expo-apple-authentication';
 import * as WebBrowser from 'expo-web-browser';
+import * as Facebook from 'expo-auth-session/providers/facebook';
 import * as Google from 'expo-auth-session/providers/google';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
 import Constants from 'expo-constants';
 import { ResponseType } from 'expo-auth-session';
 import firebase from '../lib/system/firebase';
 import '../lib/firebase';
-import { storageKey, getItem, removeItem } from '../lib/storage';
+import { storageKey, removeItem } from '../lib/storage';
 import Auth from '../lib/auth';
 import { useAppDispatch } from '../redux/store/hooks';
 import { loginUser, logoutUser, User } from '../redux/slices/auth';
-
-type AuthUser = {
-  uid: string | null;
-};
 
 const auth = new Auth();
 
@@ -41,40 +38,60 @@ export type UseFirebaseAuth = ReturnType<typeof useFirebaseAuth>;
 
 const useFirebaseAuth = (errorCallback?: () => void) => {
   const dispatch = useAppDispatch();
-  const [authUser, setAuthUser] = useState<AuthUser>();
   const [setup, setSetup] = useState(false);
 
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    responseType: ResponseType.IdToken,
-    expoClientId: Constants.manifest.extra.expoGoogleClientId,
-  });
+  const [googleRequest, googleResponse, googlePromptAsync] =
+    Google.useIdTokenAuthRequest({
+      responseType: ResponseType.IdToken,
+      expoClientId: Constants.manifest.extra.expoGoogleClientId,
+    });
+
+  const [facebookRequest, facebookResponse, facebookPromptAsync] =
+    Facebook.useAuthRequest({
+      responseType: ResponseType.Token,
+      expoClientId: Constants.manifest.extra.expoFacebookClientId,
+    });
 
   useEffect(() => {
-    debug('useIdTokenAuthRequest request:', request);
-  }, [request]);
+    debug(
+      'useFirebaseAuth - useIdTokenAuthRequest google request:',
+      googleRequest
+    );
+  }, [googleRequest]);
 
   useEffect(() => {
-    debug('useIdTokenAuthRequest response:', response);
-  }, [response]);
+    debug(
+      'useFirebaseAuth - useIdTokenAuthRequest google response:',
+      googleResponse
+    );
+  }, [googleResponse]);
+
+  useEffect(() => {
+    debug(
+      'useFirebaseAuth - useAuthRequest facebook request:',
+      facebookRequest
+    );
+  }, [facebookRequest]);
+
+  useEffect(() => {
+    debug(
+      'useFirebaseAuth - useAuthRequest facebook response:',
+      facebookResponse
+    );
+  }, [facebookResponse]);
 
   const onGoogleLogin = useCallback(() => {
-    promptAsync();
-  }, [promptAsync]);
+    googlePromptAsync();
+  }, [googlePromptAsync]);
+
+  const onFacebookLogin = useCallback(() => {
+    facebookPromptAsync();
+  }, [facebookPromptAsync]);
 
   const setSession = useCallback(
     async (refresh = false) => {
-      debug('setSession started ...');
       const idToken = await auth.setSession(refresh);
-      debug('setSession idToken: ', idToken);
-
-      if (idToken) {
-        const authUID = await getItem(storageKey.AUTH_UID_KEY);
-        debug('setSession authUID:', authUID);
-        setAuthUser({
-          uid: authUID,
-        });
-      }
-
+      debug('useFirebaseAuth - setSession idToken:', idToken);
       return idToken;
     },
     [auth.setSession]
@@ -82,20 +99,22 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
   const firebaseLogin = useCallback(
     async (credential: firebase.auth.OAuthCredential) => {
-      debug('firebaseLogin - credential: ', credential);
+      debug('useFirebaseAuth - firebaseLogin - credential:', credential);
       const data = await firebase
         .auth()
         .signInWithCredential(credential)
-        .catch((error: any) => {
+        .catch(error => {
           console.log(error);
+          Alert.alert('Login failed. ' + error);
         });
 
       if (data) {
-        debug('firebaseLogin - data.user: ', data.user);
+        debug('useFirebaseAuth - firebaseLogin - data.user:', data.user);
+        const providerUser = data.user.providerData[0];
         const user: User = {
-          uid: data.user.uid,
-          displayName: data.user.displayName,
-          email: data.user.email,
+          uid: providerUser.uid,
+          displayName: providerUser.displayName,
+          email: providerUser.email,
         };
         dispatch(loginUser(user));
       }
@@ -106,17 +125,31 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
   );
 
   useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      debug('id_token: ', id_token);
+    if (googleResponse?.type === 'success') {
+      const { id_token } = googleResponse.params;
+      debug('useFirebaseAuth - googleResponse - id_token:', id_token);
       const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
       firebaseLogin(credential);
-    } else if (response?.type === 'error') {
-      console.log('error:', response);
-      Alert.alert('Login failed');
+    } else if (googleResponse?.type === 'error') {
+      console.log('google response error:', googleResponse);
+      Alert.alert('Login failed. ' + googleResponse);
       errorCallback?.();
     }
-  }, [response, firebaseLogin, errorCallback]);
+  }, [googleResponse, firebaseLogin, errorCallback]);
+
+  useEffect(() => {
+    if (facebookResponse?.type === 'success') {
+      const { access_token } = facebookResponse.params;
+      debug('useFirebaseAuth - facebookResponse - access_token:', access_token);
+      const credential =
+        firebase.auth.FacebookAuthProvider.credential(access_token);
+      firebaseLogin(credential);
+    } else if (facebookResponse?.type === 'error') {
+      console.log('facebook response error:', facebookResponse);
+      Alert.alert('Login failed. ' + facebookResponse);
+      errorCallback?.();
+    }
+  }, [facebookResponse, firebaseLogin, errorCallback]);
 
   const onAppleLogin = useCallback(async () => {
     const nonce = nonceGen(32);
@@ -133,7 +166,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
         ],
         nonce: digestedNonce,
       });
-      debug('apple result:', result);
+      debug('useFirebaseAuth - apple result:', result);
 
       const provider = new firebase.auth.OAuthProvider('apple.com');
       const credential = provider.credential({
@@ -142,9 +175,9 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
       });
 
       firebaseLogin(credential);
-    } catch (e) {
-      console.log('error:', e);
-      Alert.alert('Login failed');
+    } catch (error) {
+      console.log('error:', error);
+      Alert.alert('Login failed. ' + error);
     }
   }, [firebaseLogin]);
 
@@ -156,7 +189,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(() => {
-      debug('onAuthStateChanged ...');
+      debug('useFirebaseAuth - onAuthStateChanged');
       setSetup(true);
     });
 
@@ -165,9 +198,9 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
   return {
     setup,
-    authUser,
     onAppleLogin,
     onGoogleLogin,
+    onFacebookLogin,
     onLogout,
   };
 };

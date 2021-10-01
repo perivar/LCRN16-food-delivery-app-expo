@@ -12,13 +12,16 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
 import Auth from '../../lib/auth';
+import { useAppDispatch } from '../../redux/store/hooks';
+import { loginUser } from '../../redux/slices/auth';
 
 const auth = new Auth();
 
 const SignUp = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const { authUser, onAppleLogin, onGoogleLogin } = useFirebaseAuth();
+  const dispatch = useAppDispatch();
+  const { onAppleLogin, onGoogleLogin, onFacebookLogin } = useFirebaseAuth();
 
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
@@ -28,12 +31,6 @@ const SignUp = () => {
   const [usernameError, setUsernameError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
   const [signUpError, setSignUpError] = React.useState('');
-
-  useEffect(() => {
-    if (authUser) {
-      navigation.navigate('Home');
-    }
-  }, [authUser]);
 
   const isEnableSignUp = () => {
     return (
@@ -192,7 +189,9 @@ const SignUp = () => {
             auth
               .doCreateUserWithEmailAndPassword(email, password)
               .then(() => {
-                navigation.navigate('Home');
+                setSignUpError(undefined);
+                // Notice Firebase automatically signs user in when their account is created
+                // so dispatch loginUser is not needed
               })
               .catch((error: any) => {
                 console.log(error);
@@ -244,7 +243,7 @@ const SignUp = () => {
             marginLeft: SIZES.radius,
             color: COLORS.white,
           }}
-          onPress={() => console.log('FB')}
+          onPress={onFacebookLogin}
         />
 
         {/* Google */}

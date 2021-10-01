@@ -197,9 +197,8 @@ const CustomDrawerContent = ({
             label="Logout"
             icon={icons.logout}
             onPress={() => {
-              dispatch(logoutUser());
               navigation.closeDrawer();
-              navigation.navigate('SignIn');
+              dispatch(logoutUser());
             }}
           />
         </View>

@@ -44,5 +44,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     appId: process.env.FIRE_BASE_APP_ID,
     measurementId: process.env.FIRE_BASE_MEASUREMENT_ID,
     expoGoogleClientId: process.env.EXPO_GOOGLE_CLIENT_ID,
+    expoFacebookClientId: process.env.EXPO_FACEBOOK_CLIENT_ID,
   },
 });

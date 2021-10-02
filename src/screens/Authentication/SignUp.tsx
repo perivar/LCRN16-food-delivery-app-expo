@@ -11,11 +11,6 @@ import useFirebaseAuth from '../../hooks/useFirebaseAuth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
-import Auth from '../../lib/auth';
-import { useAppDispatch } from '../../redux/store/hooks';
-import { loginUser } from '../../redux/slices/auth';
-
-const auth = new Auth();
 
 const SignUp = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -27,22 +22,22 @@ const SignUp = () => {
     onEmailAndPasswordSignup,
   } = useFirebaseAuth();
 
+  const [displayName, setDisplayName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPass, setShowPass] = React.useState(false);
   const [emailError, setEmailError] = React.useState('');
-  const [usernameError, setUsernameError] = React.useState('');
+  const [displayNameError, setDisplayNameError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
 
   const isEnableSignUp = () => {
     return (
+      displayName !== '' &&
       email !== '' &&
-      // username !== '' &&
       password !== '' &&
+      displayNameError === '' &&
       emailError === '' &&
-      passwordError === '' &&
-      usernameError === ''
+      passwordError === ''
     );
   };
 
@@ -61,9 +56,45 @@ const SignUp = () => {
           marginTop: SIZES.padding,
         }}>
         <FormInput
+          label="Display name"
+          onChange={value => {
+            setDisplayName(value);
+          }}
+          errorMsg={displayNameError}
+          appendComponent={
+            <View
+              style={{
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={
+                  displayName === '' ||
+                  (displayName !== '' && displayNameError === '')
+                    ? icons.correct
+                    : icons.cancel
+                }
+                style={{
+                  height: 20,
+                  width: 20,
+                  tintColor:
+                    displayName === ''
+                      ? COLORS.gray
+                      : displayName !== '' && displayNameError === ''
+                      ? COLORS.green
+                      : COLORS.red,
+                }}
+              />
+            </View>
+          }
+        />
+
+        <FormInput
           label="Email"
           keyboardType="email-address"
           autoCompleteType="email"
+          containerStyle={{
+            marginTop: SIZES.radius,
+          }}
           onChange={value => {
             utils.validateEmail(value, setEmailError);
             setEmail(value);
@@ -94,41 +125,6 @@ const SignUp = () => {
             </View>
           }
         />
-
-        {/* <FormInput
-          label="Username"
-          containerStyle={{
-            marginTop: SIZES.radius,
-          }}
-          onChange={value => {
-            setUsername(value);
-          }}
-          errorMsg={usernameError}
-          appendComponent={
-            <View
-              style={{
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={
-                  username === '' || (username !== '' && usernameError === '')
-                    ? icons.correct
-                    : icons.cancel
-                }
-                style={{
-                  height: 20,
-                  width: 20,
-                  tintColor:
-                    username === ''
-                      ? COLORS.gray
-                      : username !== '' && usernameError === ''
-                      ? COLORS.green
-                      : COLORS.red,
-                }}
-              />
-            </View>
-          }
-        /> */}
 
         <FormInput
           label="Password"
@@ -176,7 +172,7 @@ const SignUp = () => {
               : COLORS.transparentPrimary,
           }}
           // onPress={() => navigation.navigate('Otp')}
-          onPress={() => onEmailAndPasswordSignup(email, password)}
+          onPress={() => onEmailAndPasswordSignup(displayName, email, password)}
         />
 
         <View

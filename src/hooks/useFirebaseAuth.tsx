@@ -104,7 +104,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
         .auth()
         .signInWithCredential(credential)
         .catch(error => {
-          console.log(error);
+          debug(error);
           Alert.alert('Login failed. ' + error);
         });
 
@@ -131,7 +131,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
       const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
       firebaseLogin(credential);
     } else if (googleResponse?.type === 'error') {
-      console.log('google response error:', googleResponse);
+      debug('google response error:', googleResponse);
       Alert.alert('Login failed. ' + googleResponse);
       errorCallback?.();
     }
@@ -145,7 +145,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
         firebase.auth.FacebookAuthProvider.credential(access_token);
       firebaseLogin(credential);
     } else if (facebookResponse?.type === 'error') {
-      console.log('facebook response error:', facebookResponse);
+      debug('facebook response error:', facebookResponse);
       Alert.alert('Login failed. ' + facebookResponse);
       errorCallback?.();
     }
@@ -176,22 +176,42 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
       firebaseLogin(credential);
     } catch (error) {
-      console.log('error:', error);
+      debug('error:', error);
       Alert.alert('Login failed. ' + error);
     }
   }, [firebaseLogin]);
 
   const onEmailAndPasswordSignup = useCallback(
-    (email: string, password: string) => {
+    (name: string, email: string, password: string) => {
       auth
         .doCreateUserWithEmailAndPassword(email, password)
-        .then(() => {
+        .then(result => {
           // Notice Firebase automatically signs user in when their account is created
           // so dispatch loginUser is not needed
+          debug('useFirebaseAuth - onEmailAndPasswordSignup:', result);
+          result.user
+            .updateProfile({ displayName: name })
+            .then(() => {
+              // User account created & signed in!
+              const user: User = {
+                uid: result.user.uid,
+                displayName: result.user.displayName,
+                email: result.user.email,
+              };
+              dispatch(loginUser(user));
+            })
+            .catch(err => {
+              Alert.alert('Error. ', err.message);
+            });
         })
-        .catch((error: any) => {
-          console.log(error);
-          Alert.alert('Login failed. ' + error);
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            Alert.alert('Error. ', 'That email address is already in use!');
+          } else if (error.code === 'auth/invalid-email') {
+            Alert.alert('Error. ', 'That email address is invalid!');
+          } else {
+            Alert.alert('Error. ', error.message);
+          }
         });
     },
     [googlePromptAsync]
@@ -211,7 +231,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
           dispatch(loginUser(user));
         })
         .catch(error => {
-          console.log(error);
+          debug(error);
           Alert.alert('Login failed. ' + error);
         });
     },

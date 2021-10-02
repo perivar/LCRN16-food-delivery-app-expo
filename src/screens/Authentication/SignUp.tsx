@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import AuthLayout from './AuthLayout';
 import { FONTS, SIZES, COLORS, icons } from '../../constants';

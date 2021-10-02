@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
 import AuthLayout from './AuthLayout';
 import { FONTS, SIZES, COLORS, icons } from '../../constants';
@@ -16,11 +16,6 @@ import useFirebaseAuth from '../../hooks/useFirebaseAuth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
-import Auth from '../../lib/auth';
-import { loginUser, User } from '../../redux/slices/auth';
-import { useAppDispatch } from '../../redux/store/hooks';
-
-const auth = new Auth();
 
 const SignIn = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();

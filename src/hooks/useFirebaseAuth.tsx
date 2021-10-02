@@ -105,7 +105,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
         .signInWithCredential(credential)
         .catch(error => {
           debug(error);
-          Alert.alert('Login failed. ' + error);
+          Alert.alert('Login failed', error);
         });
 
       if (data) {
@@ -201,16 +201,24 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
               dispatch(loginUser(user));
             })
             .catch(err => {
-              Alert.alert('Error. ', err.message);
+              Alert.alert('Signup failed', err.message);
             });
         })
         .catch(error => {
-          if (error.code === 'auth/email-already-in-use') {
-            Alert.alert('Error. ', 'That email address is already in use!');
-          } else if (error.code === 'auth/invalid-email') {
-            Alert.alert('Error. ', 'That email address is invalid!');
+          console.log('error: ' + error);
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          if (errorCode === 'auth/email-already-in-use') {
+            Alert.alert(
+              'Signup failed',
+              'That email address is already in use!'
+            );
+          } else if (errorCode === 'auth/invalid-email') {
+            Alert.alert('Signup failed', 'That email address is invalid!');
+          } else if (errorCode === 'auth/weak-password') {
+            Alert.alert('Signup failed', 'Please choose a stronger password!');
           } else {
-            Alert.alert('Error. ', error.message);
+            Alert.alert('Signup failed', errorMessage);
           }
         });
     },
@@ -231,8 +239,20 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
           dispatch(loginUser(user));
         })
         .catch(error => {
-          debug(error);
-          Alert.alert('Login failed. ' + error);
+          console.log('error: ' + error);
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          if (errorCode === 'auth/wrong-password') {
+            Alert.alert('Login failed', 'Wrong password!');
+          } else if (errorCode === 'auth/invalid-email') {
+            Alert.alert('Login failed', 'That email address is invalid!');
+          } else if (errorCode === 'auth/user-disabled') {
+            Alert.alert('Login failed', 'The user has been disabled!');
+          } else if (errorCode === 'auth/user-not-found') {
+            Alert.alert('Login failed', 'The user cannot be found!');
+          } else {
+            Alert.alert('Login failed', errorMessage);
+          }
         });
     },
     [googlePromptAsync]

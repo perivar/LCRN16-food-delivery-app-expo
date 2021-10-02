@@ -23,12 +23,7 @@ import CustomDrawer from '../navigation/CustomDrawer';
 import SimsScreen from '../screens/SimsScreen';
 import YodaScreen from '../screens/YodaScreen';
 import { useEffect } from 'react';
-import {
-  loginUser,
-  logoutUser,
-  User,
-  userSelector,
-} from '../redux/slices/auth';
+import { loginUser, User, userSelector } from '../redux/slices/auth';
 import { useAppDispatch, useAppSelector } from '../redux/store/hooks';
 import SplashScreen from '../screens/SplashScreen';
 import firebase from '../lib/system/firebase';
@@ -45,6 +40,8 @@ const RootNavigator = () => {
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
 
+  const { onLogout, setup } = useFirebaseAuth();
+
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber
     const unsubscribeAuth = firebase.auth().onAuthStateChanged(authUser => {
@@ -57,12 +54,17 @@ const RootNavigator = () => {
         };
         dispatch(loginUser(user));
       } else {
-        dispatch(logoutUser());
+        onLogout();
       }
     });
     // unsubscribe auth listener on unmount
     return unsubscribeAuth;
   }, []);
+
+  if (!setup) {
+    // We haven't finished checking for user yet
+    return <SplashScreen />;
+  }
 
   return (
     <Stack.Navigator
@@ -102,13 +104,6 @@ const RootNavigator = () => {
 };
 
 const AppNavigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
-  const { setup } = useFirebaseAuth();
-
-  if (!setup) {
-    // We haven't finished checking for user yet
-    return <SplashScreen />;
-  }
-
   return (
     <NavigationContainer
       linking={LinkingConfiguration}

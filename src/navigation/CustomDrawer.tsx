@@ -17,9 +17,8 @@ import {
 } from '../constants';
 import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typescript/src/types';
 import { connector, PropsFromRedux } from '../redux/store/connector';
-import { logoutUser } from '../redux/slices/auth';
-import { useAppDispatch } from '../redux/store/hooks';
 import { CustomDrawerParamList } from '../types';
+import useFirebaseAuth from '../hooks/useFirebaseAuth';
 
 type ICustomDrawer = PropsFromRedux;
 type ICustomDrawerContent = PropsFromRedux & DrawerContentComponentProps;
@@ -76,7 +75,7 @@ const CustomDrawerContent = ({
   selectedTab,
   setSelectedTab,
 }: ICustomDrawerContent) => {
-  const dispatch = useAppDispatch();
+  const { onLogout } = useFirebaseAuth();
 
   return (
     <DrawerContentScrollView
@@ -198,7 +197,7 @@ const CustomDrawerContent = ({
             icon={icons.logout}
             onPress={() => {
               navigation.closeDrawer();
-              dispatch(logoutUser());
+              onLogout();
             }}
           />
         </View>

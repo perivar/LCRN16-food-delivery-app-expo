@@ -11,6 +11,8 @@ import { FONTS, COLORS } from '../constants';
 interface ITextButton {
   label: string;
   labelStyle?: StyleProp<TextStyle>;
+  label2?: string;
+  label2Style?: StyleProp<TextStyle>;
   buttonContainerStyle: StyleProp<ViewStyle>;
   onPress?(): void;
   disabled?: boolean;
@@ -19,6 +21,8 @@ interface ITextButton {
 const TextButton = ({
   label,
   labelStyle,
+  label2 = '',
+  label2Style,
   buttonContainerStyle,
   onPress,
   disabled,
@@ -38,6 +42,21 @@ const TextButton = ({
       <Text style={[{ color: COLORS.white, ...FONTS.h3 }, labelStyle]}>
         {label}
       </Text>
+
+      {label2 !== '' && (
+        <Text
+          style={[
+            {
+              flex: 1,
+              textAlign: 'right',
+              color: COLORS.white,
+              ...FONTS.h3,
+            },
+            label2Style,
+          ]}>
+          {label2}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };

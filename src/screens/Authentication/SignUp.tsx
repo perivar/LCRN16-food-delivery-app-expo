@@ -182,7 +182,7 @@ const SignUp = () => {
             justifyContent: 'center',
           }}>
           <Text style={{ color: COLORS.darkGray, ...FONTS.body3 }}>
-            Already have an account?{' '}
+            Already have an account?
           </Text>
           <TextButton
             label="Sign In"

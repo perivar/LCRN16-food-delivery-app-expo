@@ -10,6 +10,7 @@ export const COLORS = {
   lightOrange3: '#FFD9AD',
   green: '#27AE60',
   red: '#FF1717',
+  red2: '#FF6C44',
   blue: '#0064C0',
   darkBlue: '#111A2C',
   darkGray: '#525C67',
@@ -24,6 +25,7 @@ export const COLORS = {
   black: '#000000',
 
   transparent: 'transparent',
+  transparentWhite1: 'rgba(255, 255, 255, 0.1)',
   transparentBlack1: 'rgba(0, 0, 0, 0.1)',
   transparentBlack7: 'rgba(0, 0, 0, 0.7)',
 };

@@ -38,8 +38,14 @@ export type RootStackParamList = {
   Otp: undefined;
   // app
   Home: undefined;
-  Sims: undefined;
-  Yoda: undefined;
+  FoodDetail: undefined;
+  Checkout: { selectedCard: string } | undefined;
+  MyCart: undefined;
+  Success: undefined;
+  AddCard: { selectedCard: string } | undefined;
+  MyCard: undefined;
+  DeliveryStatus: undefined;
+  Map: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

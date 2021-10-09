@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import {
   View,
@@ -10,6 +12,7 @@ import {
 import { HorizontalFoodCard, VerticalFoodCard } from '../../components';
 
 import { FONTS, SIZES, COLORS, icons, dummyData } from '../../constants';
+import { RootStackParamList } from '../../types';
 
 import FilterModal from './FilterModal';
 
@@ -52,6 +55,8 @@ const Home = () => {
   const [recommends, setRecommends] = React.useState([]);
   const [menuList, setMenuList] = React.useState([]);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   React.useEffect(() => {
     handleChangeCategory(selectedCategoryId, selectedMenuType);
@@ -224,7 +229,7 @@ const Home = () => {
                 marginRight: index === popular.length - 1 ? SIZES.padding : 0,
               }}
               item={item}
-              onPress={() => console.log('Vertical Food Card')}
+              onPress={() => navigation.navigate('FoodDetail')}
             />
           )}
         />

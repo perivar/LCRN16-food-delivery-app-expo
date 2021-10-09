@@ -5,8 +5,8 @@ import { FONTS } from '../constants';
 interface IHeader {
   containerStyle: StyleProp<ViewStyle>;
   title: string;
-  leftComponent: React.ReactNode;
-  rightComponent: React.ReactNode;
+  leftComponent?: React.ReactNode;
+  rightComponent?: React.ReactNode;
 }
 
 const Header = ({

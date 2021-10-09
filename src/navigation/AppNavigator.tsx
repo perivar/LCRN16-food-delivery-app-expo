@@ -18,10 +18,22 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
-import { OnBoarding, SignIn, SignUp, ForgotPassword, Otp } from '../screens';
+import {
+  OnBoarding,
+  SignIn,
+  SignUp,
+  ForgotPassword,
+  Otp,
+  FoodDetail,
+  Checkout,
+  MyCart,
+  Success,
+  AddCard,
+  MyCard,
+  DeliveryStatus,
+  DeliveryMap,
+} from '../screens';
 import CustomDrawer from '../navigation/CustomDrawer';
-import SimsScreen from '../screens/SimsScreen';
-import YodaScreen from '../screens/YodaScreen';
 import { useEffect } from 'react';
 import { loginUser, User, userSelector } from '../redux/slices/auth';
 import { useAppDispatch, useAppSelector } from '../redux/store/hooks';
@@ -74,8 +86,23 @@ const RootNavigator = () => {
       {user ? (
         <>
           <Stack.Screen name="Home" component={CustomDrawer} />
-          <Stack.Screen name="Sims" component={SimsScreen} />
-          <Stack.Screen name="Yoda" component={YodaScreen} />
+          <Stack.Screen name="FoodDetail" component={FoodDetail} />
+          <Stack.Screen name="Checkout" component={Checkout} />
+          <Stack.Screen name="MyCart" component={MyCart} />
+          <Stack.Screen
+            name="Success"
+            component={Success}
+            options={{ gestureEnabled: false }}
+          />
+          <Stack.Screen name="AddCard" component={AddCard} />
+          <Stack.Screen name="MyCard" component={MyCard} />
+          <Stack.Screen
+            name="DeliveryStatus"
+            component={DeliveryStatus}
+            options={{ gestureEnabled: false }}
+          />
+          <Stack.Screen name="Map" component={DeliveryMap} />
+
           <Stack.Screen
             name="Root"
             component={BottomTabNavigator}

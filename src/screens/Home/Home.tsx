@@ -12,6 +12,7 @@ import {
 import { HorizontalFoodCard, VerticalFoodCard } from '../../components';
 
 import { FONTS, SIZES, COLORS, icons, dummyData } from '../../constants';
+import { IProductInfo } from '../../constants/types';
 import { RootStackParamList } from '../../types';
 
 import FilterModal from './FilterModal';
@@ -187,7 +188,13 @@ const Home = () => {
           keyExtractor={item => `${item.id}`}
           horizontal
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item, index }) => (
+          renderItem={({
+            item,
+            index,
+          }: {
+            item: IProductInfo;
+            index: number;
+          }) => (
             <HorizontalFoodCard
               containerStyle={{
                 height: 180,
@@ -204,7 +211,7 @@ const Home = () => {
                 width: 150,
               }}
               item={item}
-              onPress={() => console.log('HorizontalFoodCard')}
+              onPress={() => navigation.navigate('FoodDetail', { item })}
             />
           )}
         />
@@ -222,14 +229,20 @@ const Home = () => {
           keyExtractor={item => `${item.id}`}
           horizontal
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item, index }) => (
+          renderItem={({
+            item,
+            index,
+          }: {
+            item: IProductInfo;
+            index: number;
+          }) => (
             <VerticalFoodCard
               containerStyle={{
                 marginLeft: index === 0 ? SIZES.padding : 18,
                 marginRight: index === popular.length - 1 ? SIZES.padding : 0,
               }}
               item={item}
-              onPress={() => navigation.navigate('FoodDetail')}
+              onPress={() => navigation.navigate('FoodDetail', { item })}
             />
           )}
         />
@@ -366,25 +379,29 @@ const Home = () => {
             {renderMenuTypes()}
           </View>
         }
-        renderItem={({ item, index }) => {
-          return (
-            <HorizontalFoodCard
-              containerStyle={{
-                height: 130,
-                alignItems: 'center',
-                marginHorizontal: SIZES.padding,
-                marginBottom: SIZES.radius,
-              }}
-              imageStyle={{
-                marginTop: 20,
-                height: 110,
-                width: 110,
-              }}
-              item={item}
-              onPress={() => console.log('HorizontalFoodCard')}
-            />
-          );
-        }}
+        renderItem={({
+          item,
+          index,
+        }: {
+          item: IProductInfo;
+          index: number;
+        }) => (
+          <HorizontalFoodCard
+            containerStyle={{
+              height: 130,
+              alignItems: 'center',
+              marginHorizontal: SIZES.padding,
+              marginBottom: SIZES.radius,
+            }}
+            imageStyle={{
+              marginTop: 20,
+              height: 110,
+              width: 110,
+            }}
+            item={item}
+            onPress={() => navigation.navigate('FoodDetail', { item })}
+          />
+        )}
         ListFooterComponent={<View style={{ height: 200 }} />}
       />
     </View>

@@ -20,12 +20,16 @@ import {
   images,
   SIZES,
 } from '../../constants';
-import { RootStackParamList } from '../../types';
+import { RootStackParamList, RootStackScreenProps } from '../../types';
 
-const FoodDetail = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+const FoodDetail = ({
+  navigation,
+  route,
+}: RootStackScreenProps<'FoodDetail'>) => {
+  // const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  // console.log(JSON.stringify(route.params?.item));
 
-  const [foodItem, setFoodItem] = React.useState(dummyData.vegBiryani);
+  const [foodItem, setFoodItem] = React.useState(route.params?.item);
   const [selectedSize, setSelectedSize] = React.useState<number>(0);
   const [qty, setQty] = React.useState<number>(1);
 
@@ -94,7 +98,7 @@ const FoodDetail = () => {
               <Image
                 source={icons.calories}
                 style={{
-                  width: 38,
+                  width: 30,
                   height: 30,
                 }}
               />
@@ -144,7 +148,7 @@ const FoodDetail = () => {
               textAlign: 'justify',
               ...FONTS.body3,
             }}>
-            {foodItem?.description}
+            {foodItem?.longDescription}
           </Text>
           {/* Ratings, Duration & Shipping */}
           <View
@@ -165,7 +169,6 @@ const FoodDetail = () => {
             />
 
             {/* Duration */}
-
             <IconLabel
               containerStyle={{
                 marginLeft: SIZES.radius,
@@ -191,6 +194,7 @@ const FoodDetail = () => {
               label="Free Shipping"
             />
           </View>
+
           {/* Sizes */}
           <View
             style={{
@@ -199,7 +203,6 @@ const FoodDetail = () => {
               alignItems: 'center',
             }}>
             <Text style={{ ...FONTS.h3 }}>Sizes:</Text>
-
             <View
               style={{
                 flexDirection: 'row',
@@ -253,7 +256,7 @@ const FoodDetail = () => {
           source={images.profile}
           style={{
             width: 50,
-            height: 58,
+            height: 50,
             borderRadius: SIZES.radius,
           }}
         />
@@ -313,7 +316,7 @@ const FoodDetail = () => {
             backgroundColor: COLORS.primary,
           }}
           label="Buy Now"
-          label2="$15.99"
+          label2={`$${foodItem?.price}`}
           onPress={() => navigation.navigate('MyCart')}
         />
       </View>

@@ -29,6 +29,7 @@ const hamburger: IProductInfo = {
   id: 1,
   name: 'Hamburger',
   description: 'Chicken patty hamburger',
+  longDescription: 'Chicken patty hamburger',
   categories: [1, 2],
   price: 15.99,
   calories: 78,
@@ -40,9 +41,10 @@ const hotTacos: IProductInfo = {
   id: 2,
   name: 'Hot Tacos',
   description: 'Mexican tortilla & tacos',
+  longDescription: 'Mexican tortilla & tacos',
   categories: [1, 3],
   price: 10.99,
-  calories: 78,
+  calories: 82,
   isFavourite: false,
   image: require('../../assets/dummyData/hot_tacos.png'),
 };
@@ -50,11 +52,12 @@ const hotTacos: IProductInfo = {
 const vegBiryani: IProductInfo = {
   id: 3,
   name: 'Veg Biryani',
-  description:
+  description: 'Indian Vegetable Biryani',
+  longDescription:
     'A popular spice and vegetables mixed favoured rice dish which is typically prepared by layering the biryani gravy and basmati rice in flat bottom vessel.',
   categories: [1, 2, 3],
-  price: 10.99,
-  calories: 78,
+  price: 13.99,
+  calories: 95,
   isFavourite: true,
   image: require('../../assets/dummyData/veg_biryani.png'),
 };
@@ -63,9 +66,10 @@ const wrapSandwich: IProductInfo = {
   id: 4,
   name: 'Wrap Sandwich',
   description: 'Grilled vegetables sandwich',
+  longDescription: 'Grilled vegetables sandwich',
   categories: [1, 2],
-  price: 10.99,
-  calories: 78,
+  price: 9.99,
+  calories: 59,
   isFavourite: true,
   image: require('../../assets/dummyData/wrap_sandwich.png'),
 };
@@ -129,7 +133,7 @@ const myCart = [
   },
   {
     ...hotTacos,
-    qty: 1,
+    qty: 2,
   },
   {
     ...vegBiryani,

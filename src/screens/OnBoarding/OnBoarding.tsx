@@ -6,6 +6,7 @@ import {
   Image,
   Animated,
   FlatList,
+  ViewToken,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -29,8 +30,14 @@ const OnBoarding = () => {
     if (isUserAuthenticated) navigation.replace('Home');
   }, [isUserAuthenticated]);
 
-  const onViewChangeRef = React.useRef(({ viewableItems, _ }: any) => {
-    setCurrentIndex(viewableItems[0].index);
+  interface IViewableInfo {
+    viewableItems: ViewToken[];
+    changed: ViewToken[];
+  }
+
+  const onViewChangeRef = React.useRef((info: IViewableInfo) => {
+    // Get the first viewable item
+    setCurrentIndex(info.viewableItems[0].index);
   });
 
   const Dots = () => {

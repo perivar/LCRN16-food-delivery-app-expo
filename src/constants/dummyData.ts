@@ -1,3 +1,4 @@
+import { LatLng } from 'react-native-maps';
 import { IProductInfo } from './types';
 
 const myProfile = {
@@ -179,14 +180,14 @@ const allCards = [
   },
 ];
 
-const fromLocs = [
+const fromLocs: LatLng[] = [
   {
-    latitude: 1.5347282806345879,
-    longitude: 110.35632207358996,
+    latitude: 58.85524552763719,
+    longitude: 5.7201897059969475,
   },
   {
-    latitude: 1.556306570595712,
-    longitude: 110.35504616746915,
+    latitude: 58.85260105183051,
+    longitude: 5.743285908320634,
   },
   {
     latitude: 1.5238753474714375,

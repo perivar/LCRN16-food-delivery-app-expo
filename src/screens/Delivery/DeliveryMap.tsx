@@ -1,14 +1,25 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { Image, Platform, StyleSheet, Text, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import { LinearGradient } from 'expo-linear-gradient';
+import MapView, {
+  PROVIDER_GOOGLE,
+  Marker,
+  Region,
+  LatLng,
+} from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { IconButton } from '../../components';
 
 import {
   COLORS,
-  constants,
   dummyData,
   FONTS,
   icons,
@@ -17,28 +28,29 @@ import {
 } from '../../constants';
 import { RootStackScreenProps } from '../../types';
 import { utils } from '../../utils';
+import Constants from 'expo-constants';
 
 const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
-  const mapView = React.useRef();
-  const [region, setRegion] = React.useState(null);
-  const [toLoc, setToLoc] = React.useState(null);
-  const [fromLoc, setFromLoc] = React.useState(null);
+  const mapView = React.useRef<MapView>();
+  const [region, setRegion] = React.useState<Region>();
+  const [toLoc, setToLoc] = React.useState<LatLng>();
+  const [fromLoc, setFromLoc] = React.useState<LatLng>();
   const [angle, setAngle] = React.useState(0);
 
   const [isReady, setIsReady] = React.useState(false);
-  const [duration, setDuration] = React.useState<number>(0);
+  const [duration, setDuration] = React.useState(0);
 
   React.useEffect(() => {
-    let initialRegion = {
-      latitude: 1.5496614931250685,
-      longitude: 110.36381866919922,
-      latitudeDelta: 0.02,
-      longitudeDelta: 0.02,
+    let initialRegion: Region = {
+      latitude: 58.85524552763719,
+      longitude: 5.7201897059969475,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
     };
 
-    let destination = {
-      latitude: 1.5496614931250685,
-      longitude: 110.36381866919922,
+    let destination: LatLng = {
+      latitude: 58.85524552763719,
+      longitude: 5.7201897059969475,
     };
 
     setToLoc(destination);
@@ -51,9 +63,7 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
     return (
       <MapView
         ref={mapView}
-        style={{
-          flex: 1,
-        }}
+        style={styles.map}
         provider={PROVIDER_GOOGLE}
         initialRegion={region}>
         {fromLoc && (
@@ -61,10 +71,14 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
             key={'FromLoc'}
             coordinate={fromLoc}
             tracksViewChanges={false}
-            icon={icons.navigator1}
+            // icon={icons.navigator1}
             rotation={angle}
-            anchor={{ x: 0.5, y: 0.5 }}
-          />
+            anchor={{ x: 0.5, y: 0.5 }}>
+            <Image
+              source={icons.navigator1}
+              style={{ height: 32, width: 32 }}
+            />
+          </Marker>
         )}
 
         {toLoc && (
@@ -72,15 +86,19 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
             key={'ToLoc'}
             coordinate={toLoc}
             tracksViewChanges={false}
-            icon={icons.location_pin}
-            anchor={{ x: 0.5, y: 0.5 }}
-          />
+            // icon={icons.location_pin}
+            anchor={{ x: 0.5, y: 0.5 }}>
+            <Image
+              source={icons.location_pin}
+              style={{ height: 32, width: 32 }}
+            />
+          </Marker>
         )}
 
-        <MapViewDirections
+        {/* <MapViewDirections
           origin={fromLoc}
           destination={toLoc}
-          apikey={constants.GOOGLE_MAP_API_KEY}
+          apikey={Constants.manifest.extra.apiKey}
           strokeWidth={5}
           strokeColor={COLORS.primary}
           optimizeWaypoints={true}
@@ -89,7 +107,7 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
 
             if (!isReady) {
               // Fit the map based on the route
-              mapView?.current?.fitFoCoordinates(result.coordinates, {
+              mapView?.current?.fitToCoordinates(result.coordinates, {
                 edgePadding: {
                   right: SIZES.width * 0.1,
                   bottom: 400,
@@ -100,15 +118,14 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
 
               // Reposition the navigator
               if (result.coordinates.length >= 2) {
-                let angle = utils.calculateAngle(result.coordinates);
-
-                setAngle(angle);
+                let calculatedAngle = utils.calculateAngle(result.coordinates);
+                setAngle(calculatedAngle);
               }
 
               setIsReady(true);
             }
           }}
-        />
+        /> */}
       </MapView>
     );
   }
@@ -148,6 +165,7 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
               height: 20,
               tintColor: COLORS.gray,
             }}
+            onPress={() => console.log('globe')}
           />
           <IconButton
             icon={icons.focus}
@@ -160,6 +178,7 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
               height: 20,
               tintColor: COLORS.gray,
             }}
+            onPress={() => console.log('focus')}
           />
         </View>
       </>
@@ -172,7 +191,7 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
         style={{
           position: 'absolute',
           bottom: 0,
-          width: '180%',
+          width: '100%',
         }}>
         {/* Linear Gradient */}
         <LinearGradient
@@ -192,8 +211,8 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
         <View
           style={{
             padding: SIZES.padding,
-            borderTopLeftRadius: 380,
-            borderTopRightRadius: 39,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
             backgroundColor: COLORS.white,
           }}>
           {/* Delivery Time */}
@@ -210,7 +229,6 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
                 tintColor: COLORS.black,
               }}
             />
-
             <View
               style={{
                 marginLeft: SIZES.padding,
@@ -221,6 +239,7 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
               <Text style={{ ...FONTS.h3 }}>{duration} minutes</Text>
             </View>
           </View>
+
           {/* Address */}
           <View
             style={{
@@ -236,21 +255,22 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
                 tintColor: COLORS.black,
               }}
             />
+            <View
+              style={{
+                marginLeft: SIZES.padding,
+              }}>
+              <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>
+                Your Address
+              </Text>
+              <Text style={{ ...FONTS.h3 }}>88, Jin: Padungan, Kuchings</Text>
+            </View>
           </View>
-          <View
-            style={{
-              marginLeft: SIZES.padding,
-            }}>
-            <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>
-              Your Address
-            </Text>
-            <Text style={{ ...FONTS.h3 }}>88, Jin: Padungan, Kuchings</Text>
-          </View>
+
           {/* Delivery Man Details */}
           <TouchableOpacity
             style={{
               flexDirection: 'row',
-              height: 78,
+              height: 70,
               marginTop: SIZES.padding,
               borderRadius: SIZES.radius,
               paddingHorizontal: SIZES.radius,
@@ -266,7 +286,6 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
                 borderRadius: 5,
               }}
             />
-
             <View
               style={{
                 flex: 1,
@@ -306,10 +325,7 @@ const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}>
+    <View style={styles.container}>
       {/* Map */}
       {renderMap()}
 
@@ -332,6 +348,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray2,
     backgroundColor: COLORS.white,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
 });
 

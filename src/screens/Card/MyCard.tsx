@@ -4,10 +4,11 @@ import { CardItem, TextButton } from '../../components';
 import Header from '../../components/Header';
 import IconButton from '../../components/IconButton';
 import { COLORS, dummyData, FONTS, icons, SIZES } from '../../constants';
+import { ICard } from '../../constants/types';
 import { RootStackScreenProps } from '../../types';
 
 const MyCard = ({ navigation }: RootStackScreenProps<'MyCard'>) => {
-  const [selectedCard, setSelectedCard] = React.useState<any>(null);
+  const [selectedCard, setSelectedCard] = React.useState<ICard>();
 
   function renderHeader() {
     return (

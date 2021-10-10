@@ -8,12 +8,15 @@ import { utils } from '../../utils';
 
 import * as AppleAuthentication from 'expo-apple-authentication';
 import useFirebaseAuth from '../../hooks/useFirebaseAuth';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
 
+type SignUpNavigationProp = StackNavigationProp<RootStackParamList, 'SignUp'>;
+type SignUpRouteProp = RouteProp<RootStackParamList, 'SignUp'>;
+
 const SignUp = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<SignUpNavigationProp>();
 
   const {
     onAppleLogin,

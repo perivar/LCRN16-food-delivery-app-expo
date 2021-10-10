@@ -9,7 +9,7 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { IProductInfo } from './constants/types';
+import { ICard, IProductInfo } from './constants/types';
 
 declare global {
   namespace ReactNavigation {
@@ -40,10 +40,10 @@ export type RootStackParamList = {
   // app
   Home: undefined;
   FoodDetail: { item: IProductInfo };
-  Checkout: { selectedCard: string } | undefined;
+  Checkout: { selectedCard: ICard };
   MyCart: undefined;
   Success: undefined;
-  AddCard: { selectedCard: string } | undefined;
+  AddCard: { selectedCard: ICard };
   MyCard: undefined;
   DeliveryStatus: undefined;
   Map: undefined;

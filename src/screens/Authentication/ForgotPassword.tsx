@@ -5,15 +5,21 @@ import { SIZES, COLORS, icons } from '../../constants';
 
 import { FormInput, TextButton } from '../../components';
 import { utils } from '../../utils';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
 import Auth from '../../lib/auth';
 
+type ForgotPasswordNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'ForgotPassword'
+>;
+type ForgotPasswordRouteProp = RouteProp<RootStackParamList, 'ForgotPassword'>;
+
 const auth = new Auth();
 
 const ForgotPassword = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<ForgotPasswordNavigationProp>();
 
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');

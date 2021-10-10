@@ -8,13 +8,19 @@ import {
   FlatList,
   ViewToken,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TextButton } from '../../components';
 import { constants, images, FONTS, SIZES, COLORS } from '../../constants';
 import { isUserAuthenticatedSelector } from '../../redux/slices/auth';
 import { useAppSelector } from '../../redux/store/hooks';
 import { RootStackParamList } from '../../types';
+
+type OnBoardingNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'OnBoarding'
+>;
+type OnBoardingRouteProp = RouteProp<RootStackParamList, 'OnBoarding'>;
 
 const OnBoarding = () => {
   // set scroll x as ref to avoid unnecessary render, instead of just new Animated.Value(0)
@@ -23,7 +29,7 @@ const OnBoarding = () => {
 
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<OnBoardingNavigationProp>();
   const isUserAuthenticated = useAppSelector(isUserAuthenticatedSelector);
 
   React.useEffect(() => {

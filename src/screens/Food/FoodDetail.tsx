@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { Image, ScrollView, Text, View } from 'react-native';
@@ -22,11 +22,20 @@ import {
 } from '../../constants';
 import { RootStackParamList, RootStackScreenProps } from '../../types';
 
-const FoodDetail = ({
-  navigation,
-  route,
-}: RootStackScreenProps<'FoodDetail'>) => {
-  // const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+type FoodDetailNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'FoodDetail'
+>;
+type FoodDetailRouteProp = RouteProp<RootStackParamList, 'FoodDetail'>;
+
+// const FoodDetail = ({
+//   navigation,
+//   route,
+// }: RootStackScreenProps<'FoodDetail'>) => {
+
+const FoodDetail = () => {
+  const navigation = useNavigation<FoodDetailNavigationProp>();
+  const route = useRoute<FoodDetailRouteProp>();
   // console.log(JSON.stringify(route.params?.item));
 
   const [foodItem, setFoodItem] = React.useState(route.params?.item);

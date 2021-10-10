@@ -13,9 +13,10 @@ import {
   TextButton,
 } from '../../components';
 import { utils } from '../../utils';
+import { ICard } from '../../constants/types';
 
 const AddCard = ({ navigation, route }: RootStackScreenProps<'AddCard'>) => {
-  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [selectedCard, setSelectedCard] = React.useState<ICard>();
 
   const [cardNumber, setCardNumber] = React.useState('');
   const [cardNumberError, setCardNumberError] = React.useState('');

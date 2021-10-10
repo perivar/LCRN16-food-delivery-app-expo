@@ -1,5 +1,5 @@
 import { LatLng } from 'react-native-maps';
-import { IProductInfo } from './types';
+import { ICard, IProductInfo } from './types';
 
 const myProfile = {
   name: 'ByProgrammers',
@@ -141,7 +141,7 @@ const myCart = [
   },
 ];
 
-const myCards = [
+const myCards: ICard[] = [
   {
     id: 1,
     name: 'Master Card',
@@ -156,7 +156,7 @@ const myCards = [
   },
 ];
 
-const allCards = [
+const allCards: ICard[] = [
   {
     id: 1,
     name: 'Apple Pay',

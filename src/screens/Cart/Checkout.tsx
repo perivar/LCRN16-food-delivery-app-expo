@@ -6,9 +6,10 @@ import IconButton from '../../components/IconButton';
 import { RootStackScreenProps } from '../../types';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CardItem, FooterTotal, FormInput } from '../../components';
+import { ICard } from '../../constants/types';
 
 const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
-  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [selectedCard, setSelectedCard] = React.useState<ICard>();
 
   React.useEffect(() => {
     let { selectedCard } = route.params;

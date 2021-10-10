@@ -9,3 +9,11 @@ export interface IProductInfo {
   isFavourite: boolean;
   image: any;
 }
+
+export interface ICard {
+  id: number;
+  name: string;
+  icon: any;
+  card_no?: string;
+  key?: string;
+}

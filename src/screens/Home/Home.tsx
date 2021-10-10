@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import {
@@ -49,6 +49,9 @@ const Section = ({ title, onPress, children }: ISection) => {
   );
 };
 
+type HomeNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+type HomeRouteProp = RouteProp<RootStackParamList, 'Home'>;
+
 const Home = () => {
   const [selectedCategoryId, setSelectedCategoryId] = React.useState(1);
   const [selectedMenuType, setSelectedMenuType] = React.useState(1);
@@ -57,7 +60,7 @@ const Home = () => {
   const [menuList, setMenuList] = React.useState([]);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<HomeNavigationProp>();
 
   React.useEffect(() => {
     handleChangeCategory(selectedCategoryId, selectedMenuType);

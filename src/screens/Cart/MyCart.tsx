@@ -3,37 +3,28 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import CartQuantityButton from '../../components/CartQuantityButton';
 import Header from '../../components/Header';
 import IconButton from '../../components/IconButton';
-import { COLORS, dummyData, FONTS, icons, SIZES } from '../../constants';
+import { COLORS, FONTS, icons, SIZES } from '../../constants';
 import { RootStackScreenProps } from '../../types';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import StepperInput from '../../components/StepperInput';
 import { FooterTotal } from '../../components';
+import {
+  cartItemsSelector,
+  decrementQuantity,
+  incrementQuantity,
+  removeFromCart,
+  totalPriceSelector,
+  totalQuantitySelector,
+} from '../../redux/slices/cart';
+import { useAppDispatch, useAppSelector } from '../../redux/store/hooks';
 
 const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
-  const [myCartList, setMyCartList] = React.useState(dummyData.myCart);
-
-  // Handler
-
-  function updateQuantityHandler(newQty: number, id: number) {
-    const newMyCartList = myCartList.map(cl =>
-      cl.id === id ? { ...cl, qty: newQty } : cl
-    );
-
-    setMyCartList(newMyCartList);
-  }
-
-  function removeMyCartHandler(id: number) {
-    let newMyCartList = [...myCartList];
-
-    const index = newMyCartList.findIndex(cart => cart.id === id);
-
-    newMyCartList.splice(index, 1);
-
-    setMyCartList(newMyCartList);
-  }
+  const cartQuantity = useAppSelector(totalQuantitySelector);
+  const totalPrice = useAppSelector(totalPriceSelector);
+  const myCartList = useAppSelector(cartItemsSelector);
+  const dispatch = useAppDispatch();
 
   // Render
-
   function renderHeader() {
     return (
       <Header
@@ -63,7 +54,7 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
             onPress={() => navigation.goBack()}
           />
         }
-        rightComponent={<CartQuantityButton quantity={3} />}
+        rightComponent={<CartQuantityButton quantity={cartQuantity} />}
       />
     );
   }
@@ -80,7 +71,7 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
         }}
         disableRightSwipe={true}
         rightOpenValue={-75}
-        renderItem={(data, rowMap) => (
+        renderItem={(data, _) => (
           <View
             style={{
               height: 100,
@@ -124,19 +115,15 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
                 width: 125,
                 backgroundColor: COLORS.white,
               }}
-              value={data.item.qty}
-              onAdd={() =>
-                updateQuantityHandler(data.item.qty + 1, data.item.id)
-              }
+              value={data.item.quantity}
+              onAdd={() => dispatch(incrementQuantity({ id: data.item.id }))}
               onMinus={() => {
-                if (data.item.qty > 1) {
-                  updateQuantityHandler(data.item.qty - 1, data.item.id);
-                }
+                dispatch(decrementQuantity({ id: data.item.id }));
               }}
             />
           </View>
         )}
-        renderHiddenItem={(data, rowMap) => (
+        renderHiddenItem={(data, _) => (
           <IconButton
             containerStyle={{
               flex: 1,
@@ -148,7 +135,7 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
             iconStyle={{
               marginRight: 10,
             }}
-            onPress={() => removeMyCartHandler(data.item.id)}
+            onPress={() => dispatch(removeFromCart({ id: data.item.id }))}
           />
         )}
       />
@@ -169,9 +156,9 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
 
       {/* Footer */}
       <FooterTotal
-        subTotal={37.97}
+        subTotal={totalPrice}
         shippingFee={0.0}
-        total={37.97}
+        total={totalPrice}
         onPress={() => navigation.navigate('MyCard')}
       />
     </View>

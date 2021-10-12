@@ -20,7 +20,10 @@ import {
   images,
   SIZES,
 } from '../../constants';
-import { RootStackParamList, RootStackScreenProps } from '../../types';
+import { ICartItem } from '../../constants/types';
+import { addToCart, totalQuantitySelector } from '../../redux/slices/cart';
+import { useAppDispatch, useAppSelector } from '../../redux/store/hooks';
+import { RootStackParamList } from '../../types';
 
 type FoodDetailNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -28,19 +31,32 @@ type FoodDetailNavigationProp = StackNavigationProp<
 >;
 type FoodDetailRouteProp = RouteProp<RootStackParamList, 'FoodDetail'>;
 
+// if using RootStackScreenProps:
 // const FoodDetail = ({
 //   navigation,
 //   route,
 // }: RootStackScreenProps<'FoodDetail'>) => {
 
+// if using useNavigation and useRoute hooks:
 const FoodDetail = () => {
   const navigation = useNavigation<FoodDetailNavigationProp>();
   const route = useRoute<FoodDetailRouteProp>();
   // console.log(JSON.stringify(route.params?.item));
 
-  const [foodItem, setFoodItem] = React.useState(route.params?.item);
+  const foodItem = route.params?.item;
   const [selectedSize, setSelectedSize] = React.useState<number>(0);
-  const [qty, setQty] = React.useState<number>(1);
+  const [quantity, setQuantity] = React.useState<number>(1);
+
+  const cartQuantity = useAppSelector(totalQuantitySelector);
+  const dispatch = useAppDispatch();
+
+  const handleAddCart = () => {
+    const cartItem: ICartItem = {
+      ...foodItem,
+      quantity,
+    };
+    dispatch(addToCart(cartItem));
+  };
 
   function renderHeader() {
     return (
@@ -71,7 +87,14 @@ const FoodDetail = () => {
             onPress={() => navigation.goBack()}
           />
         }
-        rightComponent={<CartQuantityButton quantity={3} />}
+        rightComponent={
+          <CartQuantityButton
+            quantity={cartQuantity}
+            onPress={() => {
+              navigation.navigate('MyCart');
+            }}
+          />
+        }
       />
     );
   }
@@ -304,11 +327,11 @@ const FoodDetail = () => {
         }}>
         {/* Stepper Input */}
         <StepperInput
-          value={qty}
-          onAdd={() => setQty(qty + 1)}
+          value={quantity}
+          onAdd={() => setQuantity(quantity + 1)}
           onMinus={() => {
-            if (qty > 1) {
-              setQty(qty - 1);
+            if (quantity > 1) {
+              setQuantity(quantity - 1);
             }
           }}
         />
@@ -326,7 +349,10 @@ const FoodDetail = () => {
           }}
           label="Buy Now"
           label2={`$${foodItem?.price}`}
-          onPress={() => navigation.navigate('MyCart')}
+          onPress={() => {
+            handleAddCart();
+            navigation.navigate('MyCart');
+          }}
         />
       </View>
     );

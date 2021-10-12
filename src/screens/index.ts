@@ -8,7 +8,7 @@ import FilterModal from './Home/FilterModal';
 import Search from './Search/Search';
 
 // Cart
-import CartTab from './Cart/CartTab';
+import CartTab from './Cart/Cart';
 
 // Favourite
 import Favourite from './Favourite/Favourite';

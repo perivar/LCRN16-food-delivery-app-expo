@@ -1,9 +1,4 @@
-import {
-  createSelector,
-  createSlice,
-  PayloadAction,
-  SerializedError,
-} from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 export type User = {
@@ -55,6 +50,6 @@ export const isUserAuthenticatedSelector = createSelector(
   }
 );
 
-// export The reducer
+// export the reducer
 const userReducer = authSlice.reducer;
 export default userReducer;

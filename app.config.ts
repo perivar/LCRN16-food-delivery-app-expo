@@ -25,8 +25,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     usesAppleSignIn: true,
     userInterfaceStyle: 'automatic',
     buildNumber: dayjs().unix().toString(),
+    bundleIdentifier: 'com.perivar.myapp',
   },
   android: {
+    package: 'com.perivar.myapp',
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',

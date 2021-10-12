@@ -10,6 +10,10 @@ export interface IProductInfo {
   image: any;
 }
 
+export interface ICartItem extends IProductInfo {
+  quantity: number;
+}
+
 export interface ICard {
   id: number;
   name: string;

@@ -19,7 +19,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import Home from './Home/Home';
 import Search from './Search/Search';
-import CartTab from './Cart/CartTab';
+import Cart from './Cart/Cart';
 import Favourite from './Favourite/Favourite';
 import Notification from './Notification/Notification';
 import { Header } from '../components';
@@ -368,7 +368,7 @@ const MainLayout = ({
                 }}>
                 {item.label === constants.screens.home && <Home />}
                 {item.label === constants.screens.search && <Search />}
-                {item.label === constants.screens.cart && <CartTab />}
+                {item.label === constants.screens.cart && <Cart />}
                 {item.label === constants.screens.favourite && <Favourite />}
                 {item.label === constants.screens.notification && (
                   <Notification />

@@ -1,10 +1,6 @@
-import {
-  createAsyncThunk,
-  // createSelector,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import News from '../../models/News';
-// import { RootState } from '../store/store';
+import { RootState } from '../store';
 
 // https://www.newline.co/@bespoyasov/how-to-use-thunks-with-redux-toolkit-and-typescript--1e65fc64
 
@@ -139,8 +135,9 @@ export const newsSlice = createSlice({
   },
 });
 
-// export const selectNews = (state: RootState) => state.news;
+// export news selector to get the slice in any component
+export const newsSelector = (state: RootState) => state.news;
 
-// export const newsSelector = createSelector(selectNews, state => state);
-
-export default newsSlice.reducer;
+// export the reducer
+const newsReducer = newsSlice.reducer;
+export default newsReducer;

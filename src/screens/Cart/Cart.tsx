@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const CartTab = () => {
+const Cart = () => {
   return (
     <View
       style={{
@@ -14,4 +14,4 @@ const CartTab = () => {
   );
 };
 
-export default CartTab;
+export default Cart;

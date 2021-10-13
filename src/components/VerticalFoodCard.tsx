@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TouchableOpacity,
   View,
@@ -7,8 +7,10 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
+import firebase from '../lib/system/firebase';
 import { COLORS, FONTS, SIZES, icons } from '../constants';
 import { IProductInfo } from '../constants/types';
+import useFirestore from '../hooks/useFirestore';
 
 interface IVerticalFoodCard {
   containerStyle: StyleProp<ViewStyle>;
@@ -21,6 +23,48 @@ const VerticalFoodCard = ({
   item,
   onPress,
 }: IVerticalFoodCard) => {
+  const [isLiked, setIsLiked] = useState<boolean>();
+  const {
+    onLikePress,
+    onDislikePress,
+  } = useFirestore();
+
+  const foodItem = item;
+
+  // TODO: I believe this is a very NON-performant way of getting likes
+  // this gets one and one like, instead of listening to all the likes
+  // an user have done, which probably is much better
+  useEffect(() => {
+    const unsubscribe =
+      firebase
+        .firestore()
+        .collection("posts")
+        .doc(foodItem.userId)
+        .collection("userPosts")
+        .doc(foodItem.productId.toString())
+        .collection("likes")
+        .doc(firebase.auth().currentUser.uid)
+        .onSnapshot((doc) => {
+          setIsLiked(false);
+          if (doc.exists) {
+            // the document is empty (using .set({}) so exist is enough)
+            setIsLiked(true);
+          }
+        });
+
+    // remember to unsubscribe from your realtime listener on unmount or you will create a memory leak
+    return () => unsubscribe()
+  }, []);
+
+  const likeHandler = () => {
+    if (isLiked) {
+      onDislikePress(foodItem.userId, foodItem.productId.toString())
+    } else {
+      onLikePress(foodItem.userId, foodItem.productId.toString())
+    }
+    setIsLiked(!isLiked);
+  }
+
   return (
     <TouchableOpacity
       style={[
@@ -46,19 +90,22 @@ const VerticalFoodCard = ({
             }}
           />
           <Text style={{ color: COLORS.darkGray2, ...FONTS.body5 }}>
-            {item.calories} Calories
+            {foodItem.calories} Calories
           </Text>
         </View>
 
         {/* Favourite */}
-        <Image
-          source={icons.love}
-          style={{
-            width: 20,
-            height: 20,
-            tintColor: item.isFavourite ? COLORS.primary : COLORS.gray,
-          }}
-        />
+        <TouchableOpacity
+          onPress={() => likeHandler()}>
+          <Image
+            source={icons.love}
+            style={{
+              width: 20,
+              height: 20,
+              tintColor: isLiked ? COLORS.primary : COLORS.gray,
+            }}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Image */}
@@ -70,7 +117,7 @@ const VerticalFoodCard = ({
           justifyContent: 'center',
         }}>
         <Image
-          source={item.image}
+          source={foodItem.image}
           style={{
             height: '100%',
             width: '100%',
@@ -84,17 +131,17 @@ const VerticalFoodCard = ({
           alignItems: 'center',
           marginTop: -20,
         }}>
-        <Text style={{ ...FONTS.h3 }}>{item.name}</Text>
+        <Text style={{ ...FONTS.h3 }}>{foodItem.name}</Text>
         <Text
           style={{
             color: COLORS.darkGray2,
             textAlign: 'center',
             ...FONTS.body5,
           }}>
-          {item.description}
+          {foodItem.description}
         </Text>
         <Text style={{ marginTop: SIZES.radius, ...FONTS.h2 }}>
-          ${item.price}
+          ${foodItem.price}
         </Text>
       </View>
     </TouchableOpacity>

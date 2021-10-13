@@ -63,7 +63,7 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
     return (
       <SwipeListView
         data={myCartList}
-        keyExtractor={item => `${item.id}`}
+        keyExtractor={item => `${item.productId}`}
         contentContainerStyle={{
           marginTop: SIZES.radius,
           paddingHorizontal: SIZES.padding,
@@ -116,9 +116,9 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
                 backgroundColor: COLORS.white,
               }}
               value={data.item.quantity}
-              onAdd={() => dispatch(incrementQuantity({ id: data.item.id }))}
+              onAdd={() => dispatch(incrementQuantity({ id: data.item.productId }))}
               onMinus={() => {
-                dispatch(decrementQuantity({ id: data.item.id }));
+                dispatch(decrementQuantity({ id: data.item.productId }));
               }}
             />
           </View>
@@ -135,7 +135,7 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
             iconStyle={{
               marginRight: 10,
             }}
-            onPress={() => dispatch(removeFromCart({ id: data.item.id }))}
+            onPress={() => dispatch(removeFromCart({ id: data.item.productId }))}
           />
         )}
       />

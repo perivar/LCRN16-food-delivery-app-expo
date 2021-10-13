@@ -59,11 +59,11 @@ const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
           dummyData.myCards.map((item, index) => {
             return (
               <CardItem
-                key={`MyCard-${item.id}`}
+                key={`MyCard-${item.productId}`}
                 item={item}
                 isSelected={
-                  `${selectedCard?.key}-${selectedCard?.id}` ===
-                  `MyCard-${item.id}`
+                  `${selectedCard?.key}-${selectedCard?.productId}` ===
+                  `MyCard-${item.productId}`
                 }
                 onPress={() => setSelectedCard({ ...item, key: 'MyCard' })}
               />

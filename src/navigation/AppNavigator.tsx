@@ -75,62 +75,62 @@ const RootNavigator = () => {
     return unsubscribeAuth;
   }, []);
 
-  if (!setup) {
-    // We haven't finished checking for user yet
-    return <SplashScreen />;
-  }
+if (!setup) {
+  // We haven't finished checking for user yet
+  return <SplashScreen />;
+}
 
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      {user ? (
-        <>
-          <Stack.Screen name="Home" component={CustomDrawer} />
-          <Stack.Screen name="Profile" component={Profile} />
-          <Stack.Screen name="FoodDetail" component={FoodDetail} />
-          <Stack.Screen name="Checkout" component={Checkout} />
-          <Stack.Screen name="MyCart" component={MyCart} />
-          <Stack.Screen
-            name="Success"
-            component={Success}
-            options={{ gestureEnabled: false }}
-          />
-          <Stack.Screen name="AddCard" component={AddCard} />
-          <Stack.Screen name="MyCard" component={MyCard} />
-          <Stack.Screen
-            name="DeliveryStatus"
-            component={DeliveryStatus}
-            options={{ gestureEnabled: false }}
-          />
-          <Stack.Screen name="Map" component={DeliveryMap} />
+return (
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}>
+    {user ? (
+      <>
+        <Stack.Screen name="Home" component={CustomDrawer} />
+        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="FoodDetail" component={FoodDetail} />
+        <Stack.Screen name="Checkout" component={Checkout} />
+        <Stack.Screen name="MyCart" component={MyCart} />
+        <Stack.Screen
+          name="Success"
+          component={Success}
+          options={{ gestureEnabled: false }}
+        />
+        <Stack.Screen name="AddCard" component={AddCard} />
+        <Stack.Screen name="MyCard" component={MyCard} />
+        <Stack.Screen
+          name="DeliveryStatus"
+          component={DeliveryStatus}
+          options={{ gestureEnabled: false }}
+        />
+        <Stack.Screen name="Map" component={DeliveryMap} />
 
-          <Stack.Screen
-            name="Root"
-            component={BottomTabNavigator}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="NotFound"
-            component={NotFoundScreen}
-            options={{ title: 'Oops!' }}
-          />
-          <Stack.Group screenOptions={{ presentation: 'modal' }}>
-            <Stack.Screen name="Modal" component={ModalScreen} />
-          </Stack.Group>
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="OnBoarding" component={OnBoarding} />
-          <Stack.Screen name="SignIn" component={SignIn} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-          <Stack.Screen name="Otp" component={Otp} />
-        </>
-      )}
-    </Stack.Navigator>
-  );
+        <Stack.Screen
+          name="Root"
+          component={BottomTabNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="NotFound"
+          component={NotFoundScreen}
+          options={{ title: 'Oops!' }}
+        />
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          <Stack.Screen name="Modal" component={ModalScreen} />
+        </Stack.Group>
+      </>
+    ) : (
+      <>
+        <Stack.Screen name="OnBoarding" component={OnBoarding} />
+        <Stack.Screen name="SignIn" component={SignIn} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="Otp" component={Otp} />
+      </>
+    )}
+  </Stack.Navigator>
+);
 };
 
 const AppNavigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {

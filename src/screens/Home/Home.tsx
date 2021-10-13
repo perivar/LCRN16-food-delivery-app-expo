@@ -188,7 +188,7 @@ const Home = () => {
         onPress={() => console.log('Show all recommended')}>
         <FlatList
           data={recommends}
-          keyExtractor={item => `${item.id}`}
+          keyExtractor={item => `${item.productId}`}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({
@@ -229,7 +229,7 @@ const Home = () => {
         onPress={() => console.log('Show all popular items')}>
         <FlatList
           data={popular}
-          keyExtractor={item => `${item.id}`}
+          keyExtractor={item => `${item.productId}`}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({
@@ -362,7 +362,7 @@ const Home = () => {
       {/* List */}
       <FlatList
         data={menuList}
-        keyExtractor={item => `${item.id}`}
+        keyExtractor={item => `${item.productId}`}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View>

@@ -50,11 +50,11 @@ const MyCard = ({ navigation }: RootStackScreenProps<'MyCard'>) => {
         {dummyData.myCards.map((item, index) => {
           return (
             <CardItem
-              key={`MyCard-${item.id}`}
+              key={`MyCard-${item.productId}`}
               item={item}
               isSelected={
-                `${selectedCard?.key}-${selectedCard?.id}` ===
-                `MyCard-${item.id}`
+                `${selectedCard?.key}-${selectedCard?.productId}` ===
+                `MyCard-${item.productId}`
               }
               onPress={() => setSelectedCard({ ...item, key: 'MyCard' })}
             />
@@ -75,11 +75,11 @@ const MyCard = ({ navigation }: RootStackScreenProps<'MyCard'>) => {
         {dummyData.allCards.map((item, index) => {
           return (
             <CardItem
-              key={`NewCard-${item.id}`}
+              key={`NewCard-${item.productId}`}
               item={item}
               isSelected={
-                `${selectedCard?.key}-${selectedCard?.id}` ===
-                `NewCard-${item.id}`
+                `${selectedCard?.key}-${selectedCard?.productId}` ===
+                `NewCard-${item.productId}`
               }
               onPress={() => setSelectedCard({ ...item, key: 'NewCard' })}
             />

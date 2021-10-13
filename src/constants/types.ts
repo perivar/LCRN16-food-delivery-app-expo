@@ -1,5 +1,6 @@
 export interface IProductInfo {
-  id: number;
+  userId: string;
+  productId: number;
   name: string;
   description: string;
   longDescription?: string;
@@ -15,7 +16,7 @@ export interface ICartItem extends IProductInfo {
 }
 
 export interface ICard {
-  id: number;
+  productId: number;
   name: string;
   icon: any;
   card_no?: string;

@@ -5,7 +5,7 @@ import { RootState } from '../store';
 const initialState: ICartItem[] = [];
 
 const getItemIndex = (state: ICartItem[], idToFind: number) => {
-  const ids = state.map(item => item.id);
+  const ids = state.map(item => item.productId);
   return ids.indexOf(idToFind);
 };
 
@@ -26,12 +26,12 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<ICartItem>) {
-      const itemIndex = getItemIndex(state, action.payload.id);
+      const itemIndex = getItemIndex(state, action.payload.productId);
       if (itemIndex && itemIndex < 0) state.push(action.payload);
       else state[itemIndex].quantity += action.payload.quantity;
     },
     removeFromCart(state, action: PayloadAction<{ id: number }>) {
-      return state.filter(item => item.id !== action.payload.id);
+      return state.filter(item => item.productId !== action.payload.id);
     },
     incrementQuantity(state, action: PayloadAction<{ id: number }>) {
       const itemIndex = getItemIndex(state, action.payload.id);
@@ -41,10 +41,10 @@ const cartSlice = createSlice({
       const itemIndex = getItemIndex(state, action.payload.id);
 
       if (state[itemIndex].quantity > 1) state[itemIndex].quantity -= 1;
-      else return state.filter(item => item.id !== action.payload.id);
+      else return state.filter(item => item.productId !== action.payload.id);
     },
     batchRemove(state, action: PayloadAction<{ ids: number[] }>) {
-      return state.filter(item => !action.payload.ids.includes(item.id));
+      return state.filter(item => !action.payload.ids.includes(item.productId));
     },
   },
 });

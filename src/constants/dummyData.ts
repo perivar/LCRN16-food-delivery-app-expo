@@ -26,7 +26,8 @@ const categories = [
 ];
 
 const hamburger: IProductInfo = {
-  id: 1,
+  productId: 1,
+  userId: 'BurgerKing',
   name: 'Hamburger',
   description: 'Chicken patty hamburger',
   longDescription: 'Chicken patty hamburger',
@@ -38,7 +39,8 @@ const hamburger: IProductInfo = {
 };
 
 const hotTacos: IProductInfo = {
-  id: 2,
+  productId: 2,
+  userId: 'Mexicana',
   name: 'Hot Tacos',
   description: 'Mexican tortilla & tacos',
   longDescription: 'Mexican tortilla & tacos',
@@ -50,7 +52,8 @@ const hotTacos: IProductInfo = {
 };
 
 const vegBiryani: IProductInfo = {
-  id: 3,
+  productId: 3,
+  userId: 'Indian',
   name: 'Veg Biryani',
   description: 'Indian Vegetable Biryani',
   longDescription:
@@ -63,7 +66,8 @@ const vegBiryani: IProductInfo = {
 };
 
 const wrapSandwich: IProductInfo = {
-  id: 4,
+  productId: 4,
+  userId: 'BurgerKing',
   name: 'Wrap Sandwich',
   description: 'Grilled vegetables sandwich',
   longDescription: 'Grilled vegetables sandwich',
@@ -143,13 +147,13 @@ const myCart = [
 
 const myCards: ICard[] = [
   {
-    id: 1,
+    productId: 1,
     name: 'Master Card',
     icon: require('../../assets/icons/mastercard.png'),
     card_no: '1234',
   },
   {
-    id: 2,
+    productId: 2,
     name: 'Google Pay',
     icon: require('../../assets/icons/google.png'),
     card_no: '1234',
@@ -158,27 +162,27 @@ const myCards: ICard[] = [
 
 const allCards: ICard[] = [
   {
-    id: 1,
+    productId: 1,
     name: 'Apple Pay',
     icon: require('../../assets/icons/apple.png'),
   },
   {
-    id: 2,
+    productId: 2,
     name: 'Visa',
     icon: require('../../assets/icons/visa.png'),
   },
   {
-    id: 3,
+    productId: 3,
     name: 'PayPal',
     icon: require('../../assets/icons/paypal.png'),
   },
   {
-    id: 4,
+    productId: 4,
     name: 'Google Pay',
     icon: require('../../assets/icons/google.png'),
   },
   {
-    id: 5,
+    productId: 5,
     name: 'Master Card',
     icon: require('../../assets/icons/mastercard.png'),
   },

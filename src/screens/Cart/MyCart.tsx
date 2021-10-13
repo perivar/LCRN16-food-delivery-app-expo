@@ -116,7 +116,9 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
                 backgroundColor: COLORS.white,
               }}
               value={data.item.quantity}
-              onAdd={() => dispatch(incrementQuantity({ id: data.item.productId }))}
+              onAdd={() =>
+                dispatch(incrementQuantity({ id: data.item.productId }))
+              }
               onMinus={() => {
                 dispatch(decrementQuantity({ id: data.item.productId }));
               }}
@@ -135,7 +137,9 @@ const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
             iconStyle={{
               marginRight: 10,
             }}
-            onPress={() => dispatch(removeFromCart({ id: data.item.productId }))}
+            onPress={() =>
+              dispatch(removeFromCart({ id: data.item.productId }))
+            }
           />
         )}
       />

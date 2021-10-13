@@ -7,7 +7,6 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import firebase from '../lib/system/firebase';
 import { COLORS, FONTS, SIZES, icons } from '../constants';
 import { IProductInfo } from '../constants/types';
 import useFirestore from '../hooks/useFirestore';
@@ -23,47 +22,30 @@ const VerticalFoodCard = ({
   item,
   onPress,
 }: IVerticalFoodCard) => {
-  const [isLiked, setIsLiked] = useState<boolean>();
-  const {
-    onLikePress,
-    onDislikePress,
-  } = useFirestore();
-
   const foodItem = item;
+  const [isLiked, setIsLiked] = useState<boolean>();
+  const { onLikePress, onDislikePress, subscribeToLikeChanges } =
+    useFirestore();
 
-  // TODO: I believe this is a very NON-performant way of getting likes
-  // this gets one and one like, instead of listening to all the likes
-  // an user have done, which probably is much better
   useEffect(() => {
-    const unsubscribe =
-      firebase
-        .firestore()
-        .collection("posts")
-        .doc(foodItem.userId)
-        .collection("userPosts")
-        .doc(foodItem.productId.toString())
-        .collection("likes")
-        .doc(firebase.auth().currentUser.uid)
-        .onSnapshot((doc) => {
-          setIsLiked(false);
-          if (doc.exists) {
-            // the document is empty (using .set({}) so exist is enough)
-            setIsLiked(true);
-          }
-        });
+    const unsubscribe = subscribeToLikeChanges(
+      foodItem.userId,
+      foodItem.productId.toString(),
+      setIsLiked
+    );
 
     // remember to unsubscribe from your realtime listener on unmount or you will create a memory leak
-    return () => unsubscribe()
+    return () => unsubscribe();
   }, []);
 
   const likeHandler = () => {
     if (isLiked) {
-      onDislikePress(foodItem.userId, foodItem.productId.toString())
+      onDislikePress(foodItem.userId, foodItem.productId.toString());
     } else {
-      onLikePress(foodItem.userId, foodItem.productId.toString())
+      onLikePress(foodItem.userId, foodItem.productId.toString());
     }
     setIsLiked(!isLiked);
-  }
+  };
 
   return (
     <TouchableOpacity
@@ -95,8 +77,7 @@ const VerticalFoodCard = ({
         </View>
 
         {/* Favourite */}
-        <TouchableOpacity
-          onPress={() => likeHandler()}>
+        <TouchableOpacity onPress={() => likeHandler()}>
           <Image
             source={icons.love}
             style={{

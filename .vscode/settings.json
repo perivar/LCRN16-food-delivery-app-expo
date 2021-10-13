@@ -36,6 +36,7 @@
     "subspec",
     "uifabricshared",
     "unemphasized",
-    "favourite"
+    "favourite",
+    "firestore"
   ]
 }

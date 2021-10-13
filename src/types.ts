@@ -37,6 +37,7 @@ export type RootStackParamList = {
   SignUp: undefined;
   ForgotPassword: undefined;
   Otp: undefined;
+  Profile: undefined;
   // app
   Home: undefined;
   FoodDetail: { item: IProductInfo };

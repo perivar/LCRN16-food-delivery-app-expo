@@ -32,6 +32,7 @@ import {
   MyCard,
   DeliveryStatus,
   DeliveryMap,
+  Profile,
 } from '../screens';
 import CustomDrawer from '../navigation/CustomDrawer';
 import { useEffect } from 'react';
@@ -86,6 +87,7 @@ const RootNavigator = () => {
       {user ? (
         <>
           <Stack.Screen name="Home" component={CustomDrawer} />
+          <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="FoodDetail" component={FoodDetail} />
           <Stack.Screen name="Checkout" component={Checkout} />
           <Stack.Screen name="MyCart" component={MyCart} />

@@ -63,6 +63,7 @@ const SignUp = () => {
           onChange={value => {
             setDisplayName(value);
           }}
+          value={displayName}
           errorMsg={displayNameError}
           appendComponent={
             <View
@@ -102,6 +103,7 @@ const SignUp = () => {
             utils.validateEmail(value, setEmailError);
             setEmail(value);
           }}
+          value={email}
           errorMsg={emailError}
           appendComponent={
             <View
@@ -140,6 +142,7 @@ const SignUp = () => {
             utils.validatePassword(value, setPasswordError);
             setPassword(value);
           }}
+          value={password}
           errorMsg={passwordError}
           appendComponent={
             <TouchableOpacity
@@ -190,6 +193,7 @@ const SignUp = () => {
           <TextButton
             label="Sign In"
             buttonContainerStyle={{
+              marginLeft: 3,
               backgroundColor: null,
             }}
             labelStyle={{

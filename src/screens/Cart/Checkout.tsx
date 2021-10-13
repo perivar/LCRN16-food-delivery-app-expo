@@ -10,6 +10,7 @@ import { ICard } from '../../constants/types';
 
 const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
   const [selectedCard, setSelectedCard] = React.useState<ICard>();
+  const [coupon, setCoupon] = React.useState('');
 
   React.useEffect(() => {
     let { selectedCard } = route.params;
@@ -129,6 +130,8 @@ const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
             backgroundColor: COLORS.white,
             overflow: 'hidden',
           }}
+          onChange={value => setCoupon(value)}
+          value={coupon}
           placeholder="Coupon Code"
           appendComponent={
             <View

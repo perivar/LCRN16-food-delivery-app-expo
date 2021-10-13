@@ -6,10 +6,15 @@ import AuthLayout from './AuthLayout';
 import { FONTS, SIZES, COLORS } from '../../constants';
 
 import { TextButton } from '../../components';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../types';
+
+type OtpNavigationProp = StackNavigationProp<RootStackParamList, 'Otp'>;
+type OtpRouteProp = RouteProp<RootStackParamList, 'Otp'>;
 
 const Otp = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<OtpNavigationProp>();
   const [timer, setTimer] = React.useState(60);
 
   React.useEffect(() => {

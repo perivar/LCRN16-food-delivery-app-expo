@@ -49,6 +49,7 @@ const ForgotPassword = () => {
             utils.validateEmail(value, setEmailError);
             setEmail(value);
           }}
+          value={email}
           errorMsg={emailError}
           appendComponent={
             <View

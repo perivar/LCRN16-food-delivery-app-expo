@@ -60,6 +60,7 @@ const SignIn = () => {
             utils.validateEmail(value, setEmailError);
             setEmail(value);
           }}
+          value={email}
           errorMsg={emailError}
           appendComponent={
             <View
@@ -95,6 +96,7 @@ const SignIn = () => {
             marginTop: SIZES.radius,
           }}
           onChange={value => setPassword(value)}
+          value={password}
           appendComponent={
             <TouchableOpacity
               style={{

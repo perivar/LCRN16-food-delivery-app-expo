@@ -16,10 +16,10 @@ interface IFormInput {
   label?: string;
   placeholder?: string;
   inputStyle?: StyleProp<TextStyle>;
-  value?: string;
+  value: string;
   prependComponent?: React.ReactNode;
   appendComponent?: React.ReactNode;
-  onChange?(text: string): void;
+  onChange(text: string): void;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
   autoCompleteType?: any;

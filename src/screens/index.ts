@@ -24,6 +24,7 @@ import SignIn from './Authentication/SignIn';
 import SignUp from './Authentication/SignUp';
 import Otp from './Authentication/Otp';
 import ForgotPassword from './Authentication/ForgotPassword';
+import Profile from './Authentication/Profile';
 
 // Food
 import FoodDetail from './Food/FoodDetail';
@@ -47,6 +48,7 @@ export {
   SignIn,
   SignUp,
   Otp,
+  Profile,
   ForgotPassword,
   MainLayout,
   Home,

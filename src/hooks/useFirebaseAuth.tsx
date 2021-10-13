@@ -111,12 +111,12 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
       if (data) {
         debug('useFirebaseAuth - firebaseLogin - data.user:', data.user);
         const providerUser = data.user.providerData[0];
-        const user: User = {
+        const userInfo: User = {
           uid: providerUser.uid,
           displayName: providerUser.displayName,
           email: providerUser.email,
         };
-        dispatch(loginUser(user));
+        dispatch(loginUser(userInfo));
       }
 
       return await setSession(true);
@@ -231,12 +231,12 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
         .doSignInWithEmailAndPassword(email, password)
         .then(data => {
           const providerUser = data.user.providerData[0];
-          const user: User = {
+          const userInfo: User = {
             uid: providerUser.uid,
             displayName: providerUser.displayName,
             email: providerUser.email,
           };
-          dispatch(loginUser(user));
+          dispatch(loginUser(userInfo));
         })
         .catch(error => {
           console.log('error: ' + error);

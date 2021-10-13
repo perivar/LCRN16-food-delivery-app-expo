@@ -60,10 +60,11 @@ const RootNavigator = () => {
     const unsubscribeAuth = firebase.auth().onAuthStateChanged(authUser => {
       console.log('AppNavigator - onAuthStateChanged');
       if (authUser) {
+        const providerUser = authUser.providerData[0];
         const userInfo: User = {
-          uid: authUser.uid,
-          displayName: authUser.displayName,
-          email: authUser.email,
+          uid: providerUser.uid,
+          displayName: providerUser.displayName,
+          email: providerUser.email,
         };
         dispatch(loginUser(userInfo));
       } else {

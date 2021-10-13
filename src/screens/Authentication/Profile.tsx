@@ -10,6 +10,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
 import { useAppSelector } from '../../redux/store/hooks';
 import { userSelector } from '../../redux/slices/auth';
+import { color } from 'react-native-reanimated';
 
 type ProfileNavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
 type ProfileRouteProp = RouteProp<RootStackParamList, 'Profile'>;
@@ -64,10 +65,14 @@ const Profile = () => {
         }}>
         <Image
           source={images.avatar}
-          resizeMode="contain"
           style={{
-            width: 300,
-            height: 300,
+            width: 200,
+            height: 200,
+            borderRadius: 200 / 2,
+            overflow: 'hidden',
+            borderColor: COLORS.lightGray1,
+            borderWidth: 1,
+            marginBottom: SIZES.padding,
           }}
         />
         <Text style={{ color: COLORS.primary, ...FONTS.h3 }}>

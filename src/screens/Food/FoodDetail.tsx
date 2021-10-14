@@ -63,7 +63,13 @@ const FoodDetail = () => {
   };
 
   const [isLiked, setIsLiked] = useState<boolean>();
-  const { addLike, deleteLike, subscribeToLikeChanges } = useFirestore();
+  const {
+    addLike,
+    deleteLike,
+    subscribeToLikeChanges,
+    addToFavorites,
+    deleteFromFavorites,
+  } = useFirestore();
 
   useEffect(() => {
     const unsubscribe = subscribeToLikeChanges(
@@ -80,8 +86,10 @@ const FoodDetail = () => {
   const likeHandler = () => {
     if (isLiked) {
       deleteLike(foodItem.creatorId, foodItem.name, user.email);
+      deleteFromFavorites(foodItem.name, user.email);
     } else {
       addLike(foodItem.creatorId, foodItem.name, user.email);
+      addToFavorites(foodItem.name, user.email);
     }
     setIsLiked(!isLiked);
   };

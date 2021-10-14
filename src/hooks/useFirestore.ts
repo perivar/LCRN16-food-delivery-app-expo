@@ -31,6 +31,7 @@ const useFirestore = (errorCallback?: () => void) => {
             merge: true,
           }
         );
+        console.log('Successfully added like');
       })
       .catch(error => {
         debug(error);
@@ -56,6 +57,7 @@ const useFirestore = (errorCallback?: () => void) => {
         userPosts.update({
           likesCount: firebase.firestore.FieldValue.increment(-1),
         });
+        console.log('Successfully removed like');
       })
       .catch(error => {
         debug(error);

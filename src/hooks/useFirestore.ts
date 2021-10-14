@@ -1,8 +1,23 @@
 import firebase from '../lib/system/firebase';
 import '../lib/firebase';
-import { debug } from './useFirebaseAuth';
+import { debug, UserCredentials } from './useFirebaseAuth';
+import { User } from '../redux/slices/auth';
+import { ICartItem } from '../constants/types';
 
 export type UseFirestore = ReturnType<typeof useFirestore>;
+
+export interface Order {
+  id?: string;
+  displayName?: string;
+  uid: string;
+  email: string;
+  products: ICartItem[];
+  deliveryAddress: string;
+  billingAddress: string;
+  comments: string;
+  completed: boolean;
+  createdAt: firebase.firestore.FieldValue;
+}
 
 const useFirestore = (errorCallback?: () => void) => {
   const database = firebase.firestore();
@@ -140,9 +155,169 @@ const useFirestore = (errorCallback?: () => void) => {
         .delete();
 
       console.log('Product removed from favorites');
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       errorCallback?.();
+    }
+  };
+
+  const addNewOrder = async (
+    user: User,
+    cart: ICartItem[],
+    deliveryAddress: string,
+    billingAddress: string,
+    comments?: string
+  ) => {
+    const now = firebase.firestore.FieldValue.serverTimestamp();
+
+    const newOrder: Order = {
+      uid: user.uid,
+      email: user.email,
+      products: cart,
+      deliveryAddress: deliveryAddress,
+      billingAddress: billingAddress,
+      comments: comments ?? '',
+      completed: false,
+      createdAt: now,
+    };
+
+    try {
+      const responseOrder: Order = {
+        ...newOrder,
+      };
+      const document = await database.collection('orders').add(newOrder);
+      const { id: orderId } = document;
+      responseOrder.id = orderId;
+      await database
+        .collection('users')
+        .doc(`${user.email}`)
+        .collection('orders')
+        .add({ orderId });
+
+      console.log(`Order ${orderId} placed successfully`);
+      return responseOrder;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  const getAllOrders = async () => {
+    try {
+      let orders: Order[] = [];
+      const ordersSnapshots = await database.collection('orders').get();
+      const usersPromises: Promise<
+        firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
+      >[] = [];
+
+      ordersSnapshots.forEach(orderSnapshot => {
+        orders.push({
+          id: orderSnapshot.id,
+          uid: orderSnapshot.data().uid,
+          email: orderSnapshot.data().email,
+          products: orderSnapshot.data().products,
+          deliveryAddress: orderSnapshot.data().deliveryAddress,
+          billingAddress: orderSnapshot.data().billingAddress,
+          comments: orderSnapshot.data().comments,
+          completed: orderSnapshot.data().completed,
+          createdAt: orderSnapshot.data().createdAt,
+        });
+        usersPromises.push(
+          database.doc(`/users/${orderSnapshot.data().email}`).get()
+        );
+      });
+
+      const usersSnapshots = await Promise.all(usersPromises);
+
+      orders.map(order => {
+        usersSnapshots.forEach(snapshot => {
+          if (order.email === (snapshot.data() as UserCredentials).email)
+            order.displayName = `${snapshot.data().displayName}`;
+        });
+      });
+
+      return orders;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  const getOrderDetails = async (orderId: string) => {
+    try {
+      const orderDocument = await database.doc(`/orders/${orderId}`).get();
+
+      if (orderDocument.exists) {
+        let orderData = orderDocument.data() as Order;
+        orderData.id = orderDocument.id;
+        const productsPromises: Promise<
+          firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
+        >[] = [];
+
+        orderData.products.forEach(product => {
+          const promise = database.doc(`/products/${product.productId}`).get();
+          productsPromises.push(promise);
+        });
+
+        // TODO: fix a interface for the product data
+        const productsSnapshots = await Promise.all(productsPromises);
+
+        const productsData: any = [];
+
+        productsSnapshots.forEach((product: any) => {
+          let productData: any = {};
+          productData = product.data();
+          productData.id = product.id;
+          productsData.push(productData);
+        });
+
+        orderData.products.map((product: any) => {
+          productsData.forEach((productData: any) => {
+            if (productData.id === product.productId) {
+              product.details = productData;
+            }
+          });
+        });
+
+        return orderData;
+      }
+      console.log('Order not found');
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const deleteOrder = async (orderId: string) => {
+    try {
+      const documentSnapshot = await database.doc(`/orders/${orderId}`).get();
+
+      if (!documentSnapshot.exists) {
+        console.log('Order not found');
+        return;
+      }
+
+      await database.doc(`/orders/${orderId}`).delete();
+
+      console.log(`Order ${orderId} deleted successfully`);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  const updateOrder = async (order: Order) => {
+    if (order.id || order.createdAt || order.products) {
+      console.log('Not allowed to edit');
+      return;
+    }
+
+    try {
+      await database.collection('orders').doc(`${order.id}`).update(order);
+      console.log(`Order ${order.id} updated successfully`);
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   };
 
@@ -152,6 +327,11 @@ const useFirestore = (errorCallback?: () => void) => {
     subscribeToLikeChanges,
     addToFavorites,
     deleteFromFavorites,
+    addNewOrder,
+    getAllOrders,
+    getOrderDetails,
+    deleteOrder,
+    updateOrder,
   };
 };
 

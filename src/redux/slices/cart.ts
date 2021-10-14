@@ -46,6 +46,9 @@ const cartSlice = createSlice({
     batchRemove(state, action: PayloadAction<{ ids: number[] }>) {
       return state.filter(item => !action.payload.ids.includes(item.productId));
     },
+    emptyCart: () => {
+      return initialState;
+    },
   },
 });
 
@@ -56,6 +59,7 @@ export const {
   incrementQuantity,
   decrementQuantity,
   batchRemove,
+  emptyCart,
 } = cartSlice.actions;
 
 // export cart selector to get the slice in any component

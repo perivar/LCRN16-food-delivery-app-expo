@@ -170,7 +170,7 @@ const DeliveryStatus = ({
               labelStyle={{
                 color: COLORS.primary,
               }}
-              onPress={() => navigation.navigate('FoodDetail')}
+              onPress={() => navigation.navigate('Home')}
             />
 
             {/* Map View */}
@@ -206,7 +206,7 @@ const DeliveryStatus = ({
               borderRadius: SIZES.base,
             }}
             label="DONE"
-            onPress={() => navigation.navigate('FoodDetail')}
+            onPress={() => navigation.navigate('Home')}
           />
         )}
       </View>

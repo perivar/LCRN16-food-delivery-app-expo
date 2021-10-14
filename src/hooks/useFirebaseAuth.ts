@@ -36,6 +36,14 @@ const nonceGen = (length: number) => {
 
 export type UseFirebaseAuth = ReturnType<typeof useFirebaseAuth>;
 
+export interface UserCredentials {
+  createdAt: firebase.firestore.FieldValue;
+  updatedAt: firebase.firestore.FieldValue;
+  uid: string;
+  displayName: string;
+  email: string;
+}
+
 const useFirebaseAuth = (errorCallback?: () => void) => {
   const database = firebase.firestore();
   const currentUser = firebase.auth().currentUser;
@@ -129,7 +137,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
           } else {
             console.log('User does not exist, creating ...');
 
-            const userCredentials = {
+            const userCredentials: UserCredentials = {
               ...userInfo,
               createdAt: now,
               updatedAt: now,

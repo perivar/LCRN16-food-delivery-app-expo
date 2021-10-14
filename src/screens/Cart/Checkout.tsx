@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, Alert } from 'react-native';
 import { COLORS, dummyData, FONTS, icons, SIZES } from '../../constants';
 import Header from '../../components/Header';
 import IconButton from '../../components/IconButton';
@@ -7,16 +7,48 @@ import { RootStackScreenProps } from '../../types';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CardItem, FooterTotal, FormInput } from '../../components';
 import { ICard } from '../../constants/types';
+import { useAppDispatch, useAppSelector } from '../../redux/store/hooks';
+import {
+  cartItemsSelector,
+  emptyCart,
+  totalPriceSelector,
+} from '../../redux/slices/cart';
+import { userSelector } from '../../redux/slices/auth';
+import useFirestore from '../../hooks/useFirestore';
 
 const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
   const [selectedCard, setSelectedCard] = React.useState<ICard>();
-  const [coupon, setCoupon] = React.useState('');
+  const [couponCode, setCouponCode] = React.useState('');
+  const [deliveryAddress, setDeliveryAddress] = React.useState(
+    '308 Post Street San Francisco, CA'
+  );
+  const [billingAddress, setBillingAddress] = React.useState(
+    '30 Mail Street Los Angeles, CA'
+  );
+
+  const dispatch = useAppDispatch();
+  const totalPrice = useAppSelector(totalPriceSelector);
+  const myCartList = useAppSelector(cartItemsSelector);
+  const user = useAppSelector(userSelector);
+
+  const { addNewOrder } = useFirestore();
 
   React.useEffect(() => {
     let { selectedCard } = route.params;
-
     setSelectedCard(selectedCard);
   }, []);
+
+  const checkoutHandler = () => {
+    addNewOrder(user, myCartList, deliveryAddress, billingAddress, couponCode)
+      .then(order => {
+        console.log(`Checkout ${order.id} successful`);
+        dispatch(emptyCart());
+        navigation.replace('Success');
+      })
+      .catch(error => {
+        Alert.alert('Creating order failed', error);
+      });
+  };
 
   function renderHeader() {
     return (
@@ -105,7 +137,7 @@ const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
               width: '85%',
               ...FONTS.body3,
             }}>
-            308 Post Street San Francisco, CA
+            {deliveryAddress}
           </Text>
         </View>
       </View>
@@ -130,8 +162,8 @@ const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
             backgroundColor: COLORS.white,
             overflow: 'hidden',
           }}
-          onChange={value => setCoupon(value)}
-          value={coupon}
+          onChange={value => setCouponCode(value)}
+          value={couponCode}
           placeholder="Coupon Code"
           appendComponent={
             <View
@@ -184,10 +216,10 @@ const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
       </KeyboardAwareScrollView>
 
       <FooterTotal
-        subTotal={37.97}
+        subTotal={totalPrice}
         shippingFee={0.0}
-        total={37.97}
-        onPress={() => navigation.replace('Success')}
+        total={totalPrice}
+        onPress={() => checkoutHandler()}
       />
     </View>
   );

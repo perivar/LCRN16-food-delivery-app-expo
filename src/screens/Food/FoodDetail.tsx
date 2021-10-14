@@ -22,6 +22,7 @@ import {
 } from '../../constants';
 import { ICartItem } from '../../constants/types';
 import useFirestore from '../../hooks/useFirestore';
+import { userSelector } from '../../redux/slices/auth';
 import { addToCart, totalQuantitySelector } from '../../redux/slices/cart';
 import { useAppDispatch, useAppSelector } from '../../redux/store/hooks';
 import { RootStackParamList } from '../../types';
@@ -44,6 +45,8 @@ const FoodDetail = () => {
   const route = useRoute<FoodDetailRouteProp>();
   // console.log(JSON.stringify(route.params?.item));
 
+  const user = useAppSelector(userSelector);
+
   const foodItem = route.params?.item;
   const [selectedSize, setSelectedSize] = React.useState<number>(0);
   const [quantity, setQuantity] = React.useState<number>(1);
@@ -60,13 +63,13 @@ const FoodDetail = () => {
   };
 
   const [isLiked, setIsLiked] = useState<boolean>();
-  const { onLikePress, onDislikePress, subscribeToLikeChanges } =
-    useFirestore();
+  const { addLike, deleteLike, subscribeToLikeChanges } = useFirestore();
 
   useEffect(() => {
     const unsubscribe = subscribeToLikeChanges(
-      foodItem.userId,
-      foodItem.productId.toString(),
+      foodItem.creatorId,
+      foodItem.name,
+      user.email,
       setIsLiked
     );
 
@@ -76,9 +79,9 @@ const FoodDetail = () => {
 
   const likeHandler = () => {
     if (isLiked) {
-      onDislikePress(foodItem.userId, foodItem.productId.toString());
+      deleteLike(foodItem.creatorId, foodItem.name, user.email);
     } else {
-      onLikePress(foodItem.userId, foodItem.productId.toString());
+      addLike(foodItem.creatorId, foodItem.name, user.email);
     }
     setIsLiked(!isLiked);
   };

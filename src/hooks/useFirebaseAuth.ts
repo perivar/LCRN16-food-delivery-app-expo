@@ -37,6 +37,7 @@ const nonceGen = (length: number) => {
 export type UseFirebaseAuth = ReturnType<typeof useFirebaseAuth>;
 
 const useFirebaseAuth = (errorCallback?: () => void) => {
+  const database = firebase.firestore();
   const dispatch = useAppDispatch();
   const [setup, setSetup] = useState(false);
 
@@ -110,6 +111,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
       if (data) {
         debug('useFirebaseAuth - firebaseLogin - data.user:', data.user);
+
         const providerUser = data.user.providerData[0];
         const userInfo: User = {
           uid: providerUser.uid,
@@ -117,6 +119,20 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
           email: providerUser.email,
         };
         dispatch(loginUser(userInfo));
+
+        const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        const userCredentials = {
+          ...userInfo,
+          createdAt: timestamp,
+        };
+        const usersRef = database.collection('users');
+        usersRef
+          .doc(userCredentials.email)
+          .set(userCredentials)
+          .then(() => {})
+          .catch(error => {
+            Alert.alert('Creating user failed', error);
+          });
       }
 
       return await setSession(true);
@@ -193,12 +209,20 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
             .updateProfile({ displayName: name })
             .then(() => {
               // User account created & signed in!
-              const user: User = {
-                uid: result.user.uid,
-                displayName: result.user.displayName,
-                email: result.user.email,
-              };
-              dispatch(loginUser(user));
+              // const providerUser = result.user;
+              // const userInfo: User = {
+              //   uid: providerUser.uid,
+              //   displayName: providerUser.displayName,
+              //   email: providerUser.email,
+              // };
+              // dispatch(loginUser(userInfo));
+
+              // login using OAuthCredential, and create user if it doesn't exist
+              var credential = firebase.auth.EmailAuthProvider.credential(
+                email,
+                password
+              );
+              firebaseLogin(credential);
             })
             .catch(err => {
               Alert.alert('Signup failed', err.message);
@@ -230,13 +254,20 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
       auth
         .doSignInWithEmailAndPassword(email, password)
         .then(data => {
-          const providerUser = data.user.providerData[0];
-          const userInfo: User = {
-            uid: providerUser.uid,
-            displayName: providerUser.displayName,
-            email: providerUser.email,
-          };
-          dispatch(loginUser(userInfo));
+          // const providerUser = data.user.providerData[0];
+          // const userInfo: User = {
+          //   uid: providerUser.uid,
+          //   displayName: providerUser.displayName,
+          //   email: providerUser.email,
+          // };
+          // dispatch(loginUser(userInfo));
+
+          // login using OAuthCredential, and create user if it doesn't exist
+          var credential = firebase.auth.EmailAuthProvider.credential(
+            email,
+            password
+          );
+          firebaseLogin(credential);
         })
         .catch(error => {
           console.log('error: ' + error);

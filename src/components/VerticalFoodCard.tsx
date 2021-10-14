@@ -10,6 +10,8 @@ import {
 import { COLORS, FONTS, SIZES, icons } from '../constants';
 import { IProductInfo } from '../constants/types';
 import useFirestore from '../hooks/useFirestore';
+import { userSelector } from '../redux/slices/auth';
+import { useAppSelector } from '../redux/store/hooks';
 
 interface IVerticalFoodCard {
   containerStyle: StyleProp<ViewStyle>;
@@ -22,15 +24,16 @@ const VerticalFoodCard = ({
   item,
   onPress,
 }: IVerticalFoodCard) => {
+  const user = useAppSelector(userSelector);
   const foodItem = item;
   const [isLiked, setIsLiked] = useState<boolean>();
-  const { onLikePress, onDislikePress, subscribeToLikeChanges } =
-    useFirestore();
+  const { addLike, deleteLike, subscribeToLikeChanges } = useFirestore();
 
   useEffect(() => {
     const unsubscribe = subscribeToLikeChanges(
-      foodItem.userId,
-      foodItem.productId.toString(),
+      foodItem.creatorId,
+      foodItem.name,
+      user.email,
       setIsLiked
     );
 
@@ -40,9 +43,9 @@ const VerticalFoodCard = ({
 
   const likeHandler = () => {
     if (isLiked) {
-      onDislikePress(foodItem.userId, foodItem.productId.toString());
+      deleteLike(foodItem.creatorId, foodItem.name, user.email);
     } else {
-      onLikePress(foodItem.userId, foodItem.productId.toString());
+      addLike(foodItem.creatorId, foodItem.name, user.email);
     }
     setIsLiked(!isLiked);
   };

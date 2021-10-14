@@ -1,5 +1,5 @@
 export interface IProductInfo {
-  userId: string;
+  creatorId: string;
   productId: number;
   name: string;
   description: string;

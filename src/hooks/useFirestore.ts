@@ -5,18 +5,23 @@ import { debug } from './useFirebaseAuth';
 export type UseFirestore = ReturnType<typeof useFirestore>;
 
 const useFirestore = (errorCallback?: () => void) => {
-  const onLikePress = (userId: string, postId: string) => {
-    const userPosts = firebase
-      .firestore()
+  const database = firebase.firestore();
+  const currentUser = firebase.auth().currentUser;
+  const currentUserId = currentUser.uid;
+
+  const addLike = (creatorId: string, postId: string, email: string) => {
+    const id = email ?? currentUserId;
+
+    const userPosts = database
       .collection('posts')
-      .doc(userId)
+      .doc(creatorId)
       .collection('userPosts')
       .doc(postId);
 
     // using set to create the field if it doesn't exist yet
     userPosts
       .collection('likes')
-      .doc(firebase.auth().currentUser.uid)
+      .doc(id)
       .set({})
       .then(() => {
         userPosts.set(
@@ -34,18 +39,19 @@ const useFirestore = (errorCallback?: () => void) => {
       });
   };
 
-  const onDislikePress = (userId: string, postId: string) => {
-    const userPosts = firebase
-      .firestore()
+  const deleteLike = (creatorId: string, postId: string, email: string) => {
+    const id = email ?? currentUserId;
+
+    const userPosts = database
       .collection('posts')
-      .doc(userId)
+      .doc(creatorId)
       .collection('userPosts')
       .doc(postId);
 
     // using update to throw error if the field doesn't exist yet
     userPosts
       .collection('likes')
-      .doc(firebase.auth().currentUser.uid)
+      .doc(id)
       .delete()
       .then(() => {
         userPosts.update({
@@ -62,18 +68,20 @@ const useFirestore = (errorCallback?: () => void) => {
   // this gets one and one like, instead of listening to all the likes
   // an user have done, which probably is much better
   const subscribeToLikeChanges = (
-    userId: string,
+    creatorId: string,
     postId: string,
+    email: string,
     setIsLiked: Function
   ) => {
-    return firebase
-      .firestore()
+    const id = email ?? currentUserId;
+
+    return database
       .collection('posts')
-      .doc(userId)
+      .doc(creatorId)
       .collection('userPosts')
       .doc(postId)
       .collection('likes')
-      .doc(firebase.auth().currentUser.uid)
+      .doc(id)
       .onSnapshot(
         doc => {
           setIsLiked(false);
@@ -84,14 +92,65 @@ const useFirestore = (errorCallback?: () => void) => {
         },
         error => {
           console.log(error);
+          errorCallback?.();
         }
       );
   };
 
+  const addToFavorites = (productId: string, email: string) => {
+    const id = email ?? currentUserId;
+
+    try {
+      const document = database
+        .collection('users')
+        .doc(id)
+        .collection('favorites')
+        .doc(productId)
+        .get();
+
+      document.then(doc => {
+        if (doc.exists) {
+          console.log('Product already in favorites');
+        } else {
+          database
+            .collection('users')
+            .doc(id)
+            .collection('favorites')
+            .doc(productId)
+            .set({});
+          console.log('Successfully added to favorites');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      errorCallback?.();
+    }
+  };
+
+  const deleteFromFavorites = (productId: string, email: string) => {
+    const id = email ?? currentUserId;
+
+    try {
+      database
+        .collection('users')
+        .doc(id)
+        .collection('favorites')
+        .doc(productId)
+        .delete();
+
+      console.log('Product removed from favorites');
+    } catch (err) {
+      console.log(err);
+      errorCallback?.();
+    }
+  };
+
   return {
-    onLikePress,
-    onDislikePress,
+    addLike,
+    deleteLike,
     subscribeToLikeChanges,
+    addToFavorites,
+    deleteFromFavorites,
   };
 };
 

@@ -27,7 +27,7 @@ const categories = [
 
 const hamburger: IProductInfo = {
   productId: 1,
-  userId: 'BurgerKing',
+  creatorId: 'BurgerKing',
   name: 'Hamburger',
   description: 'Chicken patty hamburger',
   longDescription: 'Chicken patty hamburger',
@@ -40,7 +40,7 @@ const hamburger: IProductInfo = {
 
 const hotTacos: IProductInfo = {
   productId: 2,
-  userId: 'Mexicana',
+  creatorId: 'Mexicana',
   name: 'Hot Tacos',
   description: 'Mexican tortilla & tacos',
   longDescription: 'Mexican tortilla & tacos',
@@ -53,7 +53,7 @@ const hotTacos: IProductInfo = {
 
 const vegBiryani: IProductInfo = {
   productId: 3,
-  userId: 'Indian',
+  creatorId: 'Indian',
   name: 'Veg Biryani',
   description: 'Indian Vegetable Biryani',
   longDescription:
@@ -67,7 +67,7 @@ const vegBiryani: IProductInfo = {
 
 const wrapSandwich: IProductInfo = {
   productId: 4,
-  userId: 'BurgerKing',
+  creatorId: 'BurgerKing',
   name: 'Wrap Sandwich',
   description: 'Grilled vegetables sandwich',
   longDescription: 'Grilled vegetables sandwich',

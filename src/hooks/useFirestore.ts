@@ -7,10 +7,9 @@ export type UseFirestore = ReturnType<typeof useFirestore>;
 const useFirestore = (errorCallback?: () => void) => {
   const database = firebase.firestore();
   const currentUser = firebase.auth().currentUser;
-  const currentUserId = currentUser.uid;
 
   const addLike = (creatorId: string, postId: string, email: string) => {
-    const id = email ?? currentUserId;
+    const id = email ?? currentUser?.uid;
 
     const userPosts = database
       .collection('posts')
@@ -40,7 +39,7 @@ const useFirestore = (errorCallback?: () => void) => {
   };
 
   const deleteLike = (creatorId: string, postId: string, email: string) => {
-    const id = email ?? currentUserId;
+    const id = email ?? currentUser?.uid;
 
     const userPosts = database
       .collection('posts')
@@ -73,7 +72,7 @@ const useFirestore = (errorCallback?: () => void) => {
     email: string,
     setIsLiked: Function
   ) => {
-    const id = email ?? currentUserId;
+    const id = email ?? currentUser?.uid;
 
     return database
       .collection('posts')
@@ -98,7 +97,7 @@ const useFirestore = (errorCallback?: () => void) => {
   };
 
   const addToFavorites = (productId: string, email: string) => {
-    const id = email ?? currentUserId;
+    const id = email ?? currentUser?.uid;
 
     try {
       const document = database
@@ -128,7 +127,7 @@ const useFirestore = (errorCallback?: () => void) => {
   };
 
   const deleteFromFavorites = (productId: string, email: string) => {
-    const id = email ?? currentUserId;
+    const id = email ?? currentUser?.uid;
 
     try {
       database

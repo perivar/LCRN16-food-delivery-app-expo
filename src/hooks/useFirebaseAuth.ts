@@ -38,6 +38,8 @@ export type UseFirebaseAuth = ReturnType<typeof useFirebaseAuth>;
 
 const useFirebaseAuth = (errorCallback?: () => void) => {
   const database = firebase.firestore();
+  const currentUser = firebase.auth().currentUser;
+
   const dispatch = useAppDispatch();
   const [setup, setSetup] = useState(false);
 
@@ -98,6 +100,58 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
     [auth.setSession]
   );
 
+  const createOrUpdateUser = (userInfo: User) => {
+    try {
+      const email = userInfo.email;
+      const id = email ?? currentUser?.uid;
+
+      const users = database.collection('users');
+      const now = firebase.firestore.FieldValue.serverTimestamp();
+
+      users
+        .doc(id)
+        .get()
+        .then(doc => {
+          if (doc.exists) {
+            console.log('User already exist, updating updatedAt...');
+
+            users
+              .doc(id)
+              .update({
+                updatedAt: now,
+              })
+              .then(() => {
+                console.log('Successfully updated user');
+              })
+              .catch(error => {
+                Alert.alert('Updating user failed', error);
+              });
+          } else {
+            console.log('User does not exist, creating ...');
+
+            const userCredentials = {
+              ...userInfo,
+              createdAt: now,
+              updatedAt: now,
+            };
+
+            users
+              .doc(id)
+              .set(userCredentials)
+              .then(() => {
+                console.log('Successfully added user');
+              })
+              .catch(error => {
+                Alert.alert('Creating user failed', error);
+              });
+          }
+        });
+    } catch (error) {
+      console.log(error);
+      errorCallback?.();
+    }
+  };
+
   const firebaseLogin = useCallback(
     async (credential: firebase.auth.OAuthCredential) => {
       debug('useFirebaseAuth - firebaseLogin - credential:', credential);
@@ -120,19 +174,8 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
         };
         dispatch(loginUser(userInfo));
 
-        const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-        const userCredentials = {
-          ...userInfo,
-          createdAt: timestamp,
-        };
-        const usersRef = database.collection('users');
-        usersRef
-          .doc(userCredentials.email)
-          .set(userCredentials)
-          .then(() => {})
-          .catch(error => {
-            Alert.alert('Creating user failed', error);
-          });
+        // make sure to create or update the user object as well
+        createOrUpdateUser(userInfo);
       }
 
       return await setSession(true);

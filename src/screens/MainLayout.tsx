@@ -278,6 +278,9 @@ const MainLayout = ({
     }
   }, [selectedTab]);
 
+  // cannot use the progress prop on the drawerContent
+  // https://github.com/react-navigation/react-navigation/issues/9878
+  // therefore move the code here
   const progress = useDrawerProgress() as Animated.Adaptable<number>;
 
   const scale = Animated.interpolateNode(progress, {

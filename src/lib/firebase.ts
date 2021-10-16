@@ -1,5 +1,5 @@
-import firebase from './system/firebase';
 import { firebaseConfig } from '../config/firebase';
+import firebase from './system/firebase';
 
 // Initialize Firebase
 if (!firebase.apps.length) {

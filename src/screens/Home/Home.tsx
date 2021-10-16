@@ -2,19 +2,18 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
   FlatList,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { HorizontalFoodCard, VerticalFoodCard } from '../../components';
 
-import { FONTS, SIZES, COLORS, icons, dummyData } from '../../constants';
+import { HorizontalFoodCard, VerticalFoodCard } from '../../components';
+import { COLORS, dummyData, FONTS, icons, SIZES } from '../../constants';
 import { IProductInfo } from '../../constants/types';
 import { RootStackParamList } from '../../types';
-
 import FilterModal from './FilterModal';
 
 interface ISection {

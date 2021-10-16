@@ -1,12 +1,13 @@
 import React from 'react';
 import {
-  TouchableOpacity,
+  StyleProp,
   Text,
   TextStyle,
-  StyleProp,
+  TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import { FONTS, COLORS } from '../constants';
+
+import { COLORS, FONTS } from '../constants';
 
 interface ITextButton {
   label: string;

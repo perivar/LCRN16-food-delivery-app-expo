@@ -1,19 +1,19 @@
 import React from 'react';
-import { View, Text, ImageBackground, Image } from 'react-native';
-import { RootStackScreenProps } from '../../types';
-
+import { Image, ImageBackground, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { COLORS, FONTS, icons, images, SIZES } from '../../constants';
-import Header from '../../components/Header';
-import IconButton from '../../components/IconButton';
+
 import {
   FormInput,
   FormInputCheck,
   RadioButton,
   TextButton,
 } from '../../components';
-import { utils } from '../../utils';
+import Header from '../../components/Header';
+import IconButton from '../../components/IconButton';
+import { COLORS, FONTS, icons, images, SIZES } from '../../constants';
 import { ICard } from '../../constants/types';
+import { RootStackScreenProps } from '../../types';
+import { utils } from '../../utils';
 
 const AddCard = ({ navigation, route }: RootStackScreenProps<'AddCard'>) => {
   const [selectedCard, setSelectedCard] = React.useState<ICard>();

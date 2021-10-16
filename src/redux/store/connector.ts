@@ -1,6 +1,7 @@
 import { connect, ConnectedProps } from 'react-redux';
-import { AppDispatch, RootState } from '.';
+
 import { setSelectedTab } from '../slices/tabs';
+import { AppDispatch, RootState } from '.';
 
 const mapDispatchToProps = (dispatch: AppDispatch) => {
   return {

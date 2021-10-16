@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports'],
   extends: ['@react-native-community'],
   rules: {
     semi: 'off',
@@ -19,6 +20,8 @@ module.exports = {
     'react-native/no-unused-styles': 'warn',
     'react-native/split-platform-components': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
+    'unused-imports/no-unused-imports-ts': 'warn',
+    'simple-import-sort/imports': 'error',
   },
   overrides: [
     {

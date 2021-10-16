@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
+
+import { FooterTotal } from '../../components';
 import CartQuantityButton from '../../components/CartQuantityButton';
 import Header from '../../components/Header';
 import IconButton from '../../components/IconButton';
-import { COLORS, FONTS, icons, SIZES } from '../../constants';
-import { RootStackScreenProps } from '../../types';
-import { SwipeListView } from 'react-native-swipe-list-view';
 import StepperInput from '../../components/StepperInput';
-import { FooterTotal } from '../../components';
+import { COLORS, FONTS, icons, SIZES } from '../../constants';
 import {
   cartItemsSelector,
   decrementQuantity,
@@ -17,6 +17,7 @@ import {
   totalQuantitySelector,
 } from '../../redux/slices/cart';
 import { useAppDispatch, useAppSelector } from '../../redux/store/hooks';
+import { RootStackScreenProps } from '../../types';
 
 const MyCart = ({ navigation }: RootStackScreenProps<'MyCart'>) => {
   const cartQuantity = useAppSelector(totalQuantitySelector);

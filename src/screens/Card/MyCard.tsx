@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+
 import { CardItem, TextButton } from '../../components';
 import Header from '../../components/Header';
 import IconButton from '../../components/IconButton';

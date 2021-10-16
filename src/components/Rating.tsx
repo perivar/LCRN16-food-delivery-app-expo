@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Image, StyleSheet, StyleProp, ImageStyle } from 'react-native';
+import { Image, ImageStyle, StyleProp, StyleSheet, View } from 'react-native';
 
-import { icons, COLORS } from '../constants';
+import { COLORS, icons } from '../constants';
 
 interface IRating {
   rating: number;

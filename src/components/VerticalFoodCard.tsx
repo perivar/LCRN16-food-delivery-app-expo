@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
-  TouchableOpacity,
-  View,
-  Text,
   Image,
   StyleProp,
+  Text,
+  TouchableOpacity,
+  View,
   ViewStyle,
 } from 'react-native';
-import { COLORS, FONTS, SIZES, icons } from '../constants';
+
+import { COLORS, FONTS, icons, SIZES } from '../constants';
 import { IProductInfo } from '../constants/types';
 import useFirestore from '../hooks/useFirestore';
 import { userSelector } from '../redux/slices/auth';

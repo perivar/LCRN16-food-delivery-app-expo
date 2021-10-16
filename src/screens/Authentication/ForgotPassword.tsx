@@ -1,14 +1,14 @@
-import React from 'react';
-import { View, Image } from 'react-native';
-import AuthLayout from './AuthLayout';
-import { SIZES, COLORS, icons } from '../../constants';
-
-import { FormInput, TextButton } from '../../components';
-import { utils } from '../../utils';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../types';
+import React from 'react';
+import { Image, View } from 'react-native';
+
+import { FormInput, TextButton } from '../../components';
+import { COLORS, icons, SIZES } from '../../constants';
 import Auth from '../../lib/auth';
+import { RootStackParamList } from '../../types';
+import { utils } from '../../utils';
+import AuthLayout from './AuthLayout';
 
 type ForgotPasswordNavigationProp = StackNavigationProp<
   RootStackParamList,

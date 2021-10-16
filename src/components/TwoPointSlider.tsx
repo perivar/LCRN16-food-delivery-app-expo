@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { COLORS, FONTS, SIZES } from '../constants';
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, ScrollView } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
+
 import {
   Header,
   LineDivider,

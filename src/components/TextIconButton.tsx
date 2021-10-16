@@ -1,16 +1,17 @@
 import React from 'react';
 import {
-  TouchableOpacity,
-  Text,
   Image,
+  ImageSourcePropType,
   ImageStyle,
   StyleProp,
-  ViewStyle,
-  TextStyle,
-  ImageSourcePropType,
   StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
 } from 'react-native';
-import { FONTS, COLORS } from '../constants';
+
+import { COLORS, FONTS } from '../constants';
 
 interface ITextIconButton {
   containerStyle: StyleProp<ViewStyle>;

@@ -1,7 +1,7 @@
 import constants from './constants';
-import theme, { COLORS, SIZES, FONTS } from './theme';
-import images from './images';
-import icons from './icons';
 import dummyData from './dummyData';
+import icons from './icons';
+import images from './images';
+import theme, { COLORS, FONTS, SIZES } from './theme';
 
 export { constants, theme, COLORS, SIZES, FONTS, images, icons, dummyData };

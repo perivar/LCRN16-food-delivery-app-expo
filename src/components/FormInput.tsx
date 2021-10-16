@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-  View,
-  Text,
-  TextInput,
   KeyboardTypeOptions,
   StyleProp,
-  ViewStyle,
+  Text,
+  TextInput,
   TextStyle,
+  View,
+  ViewStyle,
 } from 'react-native';
-import { FONTS, SIZES, COLORS } from '../constants';
+
+import { COLORS, FONTS, SIZES } from '../constants';
 
 interface IFormInput {
   containerStyle?: StyleProp<ViewStyle>;

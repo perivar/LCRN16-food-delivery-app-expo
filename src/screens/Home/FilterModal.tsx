@@ -1,22 +1,22 @@
 import React from 'react';
 import {
-  View,
-  Text,
   Animated,
-  ScrollView,
-  TouchableWithoutFeedback,
   Modal,
+  ScrollView,
   StyleProp,
+  Text,
+  TouchableWithoutFeedback,
+  View,
   ViewStyle,
 } from 'react-native';
+
 import {
   IconButton,
   TextButton,
   TextIconButton,
   TwoPointSlider,
 } from '../../components';
-
-import { COLORS, FONTS, SIZES, constants, icons } from '../../constants';
+import { COLORS, constants, FONTS, icons, SIZES } from '../../constants';
 
 interface ISection {
   containerStyle?: StyleProp<ViewStyle>;

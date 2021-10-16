@@ -1,20 +1,21 @@
 import React from 'react';
-import { View, Text, Image, Alert } from 'react-native';
-import { COLORS, dummyData, FONTS, icons, SIZES } from '../../constants';
+import { Alert, Image, Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+import { CardItem, FooterTotal, FormInput } from '../../components';
 import Header from '../../components/Header';
 import IconButton from '../../components/IconButton';
-import { RootStackScreenProps } from '../../types';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { CardItem, FooterTotal, FormInput } from '../../components';
+import { COLORS, dummyData, FONTS, icons, SIZES } from '../../constants';
 import { ICard } from '../../constants/types';
-import { useAppDispatch, useAppSelector } from '../../redux/store/hooks';
+import useFirestore from '../../hooks/useFirestore';
+import { userSelector } from '../../redux/slices/auth';
 import {
   cartItemsSelector,
   emptyCart,
   totalPriceSelector,
 } from '../../redux/slices/cart';
-import { userSelector } from '../../redux/slices/auth';
-import useFirestore from '../../hooks/useFirestore';
+import { useAppDispatch, useAppSelector } from '../../redux/store/hooks';
+import { RootStackScreenProps } from '../../types';
 
 const Checkout = ({ navigation, route }: RootStackScreenProps<'Checkout'>) => {
   const [selectedCard, setSelectedCard] = React.useState<ICard>();

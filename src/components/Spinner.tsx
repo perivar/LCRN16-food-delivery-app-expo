@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+
 import { COLORS } from '../constants';
 
 export default function Spinner() {

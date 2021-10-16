@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleProp, ViewStyle } from 'react-native';
+import { StyleProp, Text, View, ViewStyle } from 'react-native';
+
 import { COLORS, FONTS, icons, SIZES } from '../constants';
 import IconButton from './IconButton';
 

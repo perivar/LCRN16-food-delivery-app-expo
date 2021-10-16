@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, Image, ViewStyle, StyleProp } from 'react-native';
-
+import { Image, StyleProp, Text, View, ViewStyle } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { images, FONTS, SIZES, COLORS } from '../../constants';
+import { COLORS, FONTS, images, SIZES } from '../../constants';
 
 interface IAuthLayout {
   title: string;

@@ -1,9 +1,15 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 
 import rootReducer from '../slices';
 
 const store = configureStore({
   reducer: rootReducer,
+  // add middleware
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(logger),
 });
 
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

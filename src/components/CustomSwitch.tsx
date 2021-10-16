@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
+
 import { COLORS, FONTS, SIZES } from '../constants';
 
 interface ICustomSwitch {

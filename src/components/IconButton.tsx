@@ -1,10 +1,10 @@
 import React from 'react';
 import { ImageSourcePropType } from 'react-native';
 import {
-  TouchableOpacity,
   Image,
-  StyleProp,
   ImageStyle,
+  StyleProp,
+  TouchableOpacity,
   ViewStyle,
 } from 'react-native';
 

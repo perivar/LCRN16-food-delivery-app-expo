@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, BackHandler, Image } from 'react-native';
+import { BackHandler, Image, Text, View } from 'react-native';
+
 import { TextButton } from '../../components';
 import { COLORS, FONTS, images, SIZES } from '../../constants';
 import { RootStackScreenProps } from '../../types';

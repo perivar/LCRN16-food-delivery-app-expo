@@ -1,6 +1,7 @@
-import { ExpoConfig, ConfigContext } from '@expo/config';
-import dayjs from 'dayjs';
 import 'dotenv/config';
+
+import { ConfigContext, ExpoConfig } from '@expo/config';
+import dayjs from 'dayjs';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,

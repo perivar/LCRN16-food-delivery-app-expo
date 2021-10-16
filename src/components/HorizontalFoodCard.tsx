@@ -1,7 +1,8 @@
 import React from 'react';
 import { ImageStyle, StyleProp, ViewStyle } from 'react-native';
-import { TouchableOpacity, View, Text, Image } from 'react-native';
-import { COLORS, FONTS, SIZES, icons } from '../constants';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+
+import { COLORS, FONTS, icons, SIZES } from '../constants';
 import { IProductInfo } from '../constants/types';
 
 interface IHorizontalFoodCard {

@@ -1,8 +1,9 @@
-import firebase from '../lib/system/firebase';
 import '../lib/firebase';
-import { debug, UserCredentials } from './useFirebaseAuth';
-import { User } from '../redux/slices/auth';
+
 import { ICartItem } from '../constants/types';
+import firebase from '../lib/system/firebase';
+import { User } from '../redux/slices/auth';
+import { debug, UserCredentials } from './useFirebaseAuth';
 
 export type UseFirestore = ReturnType<typeof useFirestore>;
 

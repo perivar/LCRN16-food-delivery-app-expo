@@ -1,13 +1,14 @@
 import React from 'react';
 import {
-  Text,
   Image,
-  TouchableOpacity,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
   ImageStyle,
+  StyleProp,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
 } from 'react-native';
+
 import { COLORS, FONTS, icons, SIZES } from '../constants';
 
 interface IRadioButton {

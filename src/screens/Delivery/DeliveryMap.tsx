@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import {
   Dimensions,
@@ -8,16 +9,14 @@ import {
   View,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { LinearGradient } from 'expo-linear-gradient';
 import MapView, {
-  PROVIDER_GOOGLE,
-  Marker,
-  Region,
   LatLng,
+  Marker,
+  PROVIDER_GOOGLE,
+  Region,
 } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
-import { IconButton } from '../../components';
 
+import { IconButton } from '../../components';
 import {
   COLORS,
   dummyData,
@@ -27,8 +26,6 @@ import {
   SIZES,
 } from '../../constants';
 import { RootStackScreenProps } from '../../types';
-import { utils } from '../../utils';
-import Constants from 'expo-constants';
 
 const DeliveryMap = ({ navigation }: RootStackScreenProps<'Map'>) => {
   const mapView = React.useRef<MapView>();

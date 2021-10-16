@@ -1,13 +1,13 @@
 import React from 'react';
 import {
-  View,
   Image,
+  ImageSourcePropType,
+  ImageStyle,
+  StyleProp,
   Text,
   TextStyle,
-  StyleProp,
-  ImageSourcePropType,
+  View,
   ViewStyle,
-  ImageStyle,
 } from 'react-native';
 
 import { FONTS, SIZES } from '../constants';

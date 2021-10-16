@@ -3,45 +3,43 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import {
-  NavigationContainer,
-  DefaultTheme,
   DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
 } from '@react-navigation/native';
-
-import ModalScreen from '../screens/ModalScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
-import { RootStackParamList } from '../types';
-import LinkingConfiguration from './LinkingConfiguration';
-
-import {
-  OnBoarding,
-  SignIn,
-  SignUp,
-  ForgotPassword,
-  Otp,
-  FoodDetail,
-  Checkout,
-  MyCart,
-  Success,
-  AddCard,
-  MyCard,
-  DeliveryStatus,
-  DeliveryMap,
-  Profile,
-} from '../screens';
-import CustomDrawer from '../navigation/CustomDrawer';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as React from 'react';
 import { useEffect } from 'react';
+import { ColorSchemeName } from 'react-native';
+
+import useFirebaseAuth from '../hooks/useFirebaseAuth';
+import firebase from '../lib/system/firebase';
+import CustomDrawer from '../navigation/CustomDrawer';
 import { loginUser, User, userSelector } from '../redux/slices/auth';
 import { useAppDispatch, useAppSelector } from '../redux/store/hooks';
+import {
+  AddCard,
+  Checkout,
+  DeliveryMap,
+  DeliveryStatus,
+  FoodDetail,
+  ForgotPassword,
+  MyCard,
+  MyCart,
+  OnBoarding,
+  Otp,
+  Profile,
+  SignIn,
+  SignUp,
+  Success,
+} from '../screens';
+import ModalScreen from '../screens/ModalScreen';
+import NotFoundScreen from '../screens/NotFoundScreen';
 import SplashScreen from '../screens/SplashScreen';
-import firebase from '../lib/system/firebase';
-import useFirebaseAuth from '../hooks/useFirebaseAuth';
+import { RootStackParamList } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
+import LinkingConfiguration from './LinkingConfiguration';
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.

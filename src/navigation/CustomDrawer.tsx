@@ -1,24 +1,23 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, ImageProps } from 'react-native';
-
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
+import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typescript/src/types';
+import React from 'react';
+import { Image, ImageProps, Text, TouchableOpacity, View } from 'react-native';
 
-import { MainLayout } from '../screens';
 import {
   COLORS,
-  FONTS,
-  SIZES,
   constants,
-  icons,
   dummyData,
+  FONTS,
+  icons,
+  SIZES,
 } from '../constants';
-import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typescript/src/types';
-import { connector, PropsFromRedux } from '../redux/store/connector';
-import { CustomDrawerParamList } from '../types';
 import useFirebaseAuth from '../hooks/useFirebaseAuth';
+import { connector, PropsFromRedux } from '../redux/store/connector';
+import { MainLayout } from '../screens';
+import { CustomDrawerParamList } from '../types';
 
 type ICustomDrawer = PropsFromRedux;
 type ICustomDrawerContent = PropsFromRedux & DrawerContentComponentProps;

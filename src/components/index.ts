@@ -1,21 +1,21 @@
+import CardItem from './CardItem';
+import CartQuantityButton from './CartQuantityButton';
+import CustomSwitch from './CustomSwitch';
+import FooterTotal from './FooterTotal';
+import FormInput from './FormInput';
+import FormInputCheck from './FormInputCheck';
 import Header from './Header';
 import HorizontalFoodCard from './HorizontalFoodCard';
-import VerticalFoodCard from './VerticalFoodCard';
 import IconButton from './IconButton';
-import TwoPointSlider from './TwoPointSlider';
-import TextButton from './TextButton';
-import TextIconButton from './TextIconButton';
-import FormInput from './FormInput';
-import CustomSwitch from './CustomSwitch';
-import CartQuantityButton from './CartQuantityButton';
 import IconLabel from './IconLabel';
 import LineDivider from './LineDivider';
+import RadioButton from './RadioButton';
 import Rating from './Rating';
 import StepperInput from './StepperInput';
-import FooterTotal from './FooterTotal';
-import CardItem from './CardItem';
-import FormInputCheck from './FormInputCheck';
-import RadioButton from './RadioButton';
+import TextButton from './TextButton';
+import TextIconButton from './TextIconButton';
+import TwoPointSlider from './TwoPointSlider';
+import VerticalFoodCard from './VerticalFoodCard';
 
 export {
   Header,

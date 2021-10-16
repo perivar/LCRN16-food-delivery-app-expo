@@ -1,4 +1,5 @@
 import { LatLng } from 'react-native-maps';
+
 import { ICard, IProductInfo } from './types';
 
 const myProfile = {

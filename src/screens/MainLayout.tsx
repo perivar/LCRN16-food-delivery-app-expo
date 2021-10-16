@@ -1,40 +1,39 @@
+import { useDrawerProgress } from '@react-navigation/drawer';
+import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import {
-  View,
+  FlatList,
+  Image,
+  ImageProps,
+  StyleProp,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Image,
-  FlatList,
-  ImageProps,
+  View,
   ViewStyle,
-  StyleProp,
 } from 'react-native';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
 
-import Home from './Home/Home';
-import Search from './Search/Search';
-import Cart from './Cart/Cart';
-import Favourite from './Favourite/Favourite';
-import Notification from './Notification/Notification';
 import { Header } from '../components';
-
 import {
   COLORS,
-  FONTS,
-  SIZES,
-  icons,
   constants,
   dummyData,
+  FONTS,
+  icons,
+  SIZES,
 } from '../constants';
-import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 import { connector, PropsFromRedux } from '../redux/store/connector';
-import { useDrawerProgress } from '@react-navigation/drawer';
+import Cart from './Cart/Cart';
+import Favourite from './Favourite/Favourite';
+import Home from './Home/Home';
+import Notification from './Notification/Notification';
+import Search from './Search/Search';
 
 interface ITabButton {
   label: string;

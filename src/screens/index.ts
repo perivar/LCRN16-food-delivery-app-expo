@@ -1,46 +1,35 @@
-import MainLayout from './MainLayout';
-
-// Home
-import Home from './Home/Home';
-import FilterModal from './Home/FilterModal';
-
-// Search
-import Search from './Search/Search';
-
-// Cart
-import CartTab from './Cart/Cart';
-
-// Favourite
-import Favourite from './Favourite/Favourite';
-
-// Notification
-import Notification from './Notification/Notification';
-
-import OnBoarding from './OnBoarding/OnBoarding';
-
 // Authentication
 import AuthLayout from './Authentication/AuthLayout';
+import ForgotPassword from './Authentication/ForgotPassword';
+import Otp from './Authentication/Otp';
+import Profile from './Authentication/Profile';
 import SignIn from './Authentication/SignIn';
 import SignUp from './Authentication/SignUp';
-import Otp from './Authentication/Otp';
-import ForgotPassword from './Authentication/ForgotPassword';
-import Profile from './Authentication/Profile';
-
-// Food
-import FoodDetail from './Food/FoodDetail';
-
+// Card
+import AddCard from './Card/AddCard';
+import MyCard from './Card/MyCard';
+// Cart
+import CartTab from './Cart/Cart';
 // Cart
 import Checkout from './Cart/Checkout';
 import MyCart from './Cart/MyCart';
 import Success from './Cart/Success';
-
-// Card
-import AddCard from './Card/AddCard';
-import MyCard from './Card/MyCard';
-
+import DeliveryMap from './Delivery/DeliveryMap';
 // Delivery
 import DeliveryStatus from './Delivery/DeliveryStatus';
-import DeliveryMap from './Delivery/DeliveryMap';
+// Favourite
+import Favourite from './Favourite/Favourite';
+// Food
+import FoodDetail from './Food/FoodDetail';
+import FilterModal from './Home/FilterModal';
+// Home
+import Home from './Home/Home';
+import MainLayout from './MainLayout';
+// Notification
+import Notification from './Notification/Notification';
+import OnBoarding from './OnBoarding/OnBoarding';
+// Search
+import Search from './Search/Search';
 
 export {
   OnBoarding,

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+
 import { COLORS, FONTS, icons, SIZES } from '../constants';
 
 interface ICardItem {

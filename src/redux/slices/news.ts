@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
 import News from '../../models/News';
 import { RootState } from '../store';
 

@@ -1,6 +1,7 @@
-import firebase from './system/firebase';
-import { storageKey, setItem, getItem, removeItem } from './storage';
 import dayjs from 'dayjs';
+
+import { getItem, removeItem, setItem, storageKey } from './storage';
+import firebase from './system/firebase';
 
 const initFirebaseAuth = (): Promise<firebase.User | null> => {
   return new Promise(resolve => {

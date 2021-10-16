@@ -1,8 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { View, Text, Platform } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 
-import { FONTS, SIZES, COLORS } from '../constants';
+import { COLORS, FONTS, SIZES } from '../constants';
 import LineDivider from './LineDivider';
 import TextButton from './TextButton';
 

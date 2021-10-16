@@ -1,7 +1,8 @@
+import { RouteProp, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, Platform } from 'react-native';
-import AuthLayout from './AuthLayout';
-import { FONTS, SIZES, COLORS, icons } from '../../constants';
+import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
 
 import {
   CustomSwitch,
@@ -9,13 +10,11 @@ import {
   TextButton,
   TextIconButton,
 } from '../../components';
-import { utils } from '../../utils';
-
-import * as AppleAuthentication from 'expo-apple-authentication';
+import { COLORS, FONTS, icons, SIZES } from '../../constants';
 import useFirebaseAuth from '../../hooks/useFirebaseAuth';
-import { RouteProp, useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
+import { utils } from '../../utils';
+import AuthLayout from './AuthLayout';
 
 type SignInNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 type SignInRouteProp = RouteProp<RootStackParamList, 'SignIn'>;

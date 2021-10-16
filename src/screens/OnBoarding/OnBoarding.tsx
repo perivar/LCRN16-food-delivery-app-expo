@@ -1,17 +1,18 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  Image,
-  Animated,
-  FlatList,
-  ViewToken,
-} from 'react-native';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React from 'react';
+import {
+  Animated,
+  FlatList,
+  Image,
+  ImageBackground,
+  Text,
+  View,
+  ViewToken,
+} from 'react-native';
+
 import { TextButton } from '../../components';
-import { constants, images, FONTS, SIZES, COLORS } from '../../constants';
+import { COLORS, constants, FONTS, images, SIZES } from '../../constants';
 import { isUserAuthenticatedSelector } from '../../redux/slices/auth';
 import { useAppSelector } from '../../redux/store/hooks';
 import { RootStackParamList } from '../../types';

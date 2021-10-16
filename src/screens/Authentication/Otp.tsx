@@ -1,14 +1,13 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import OTPInputView from '@twotalltotems/react-native-otp-input';
-
-import AuthLayout from './AuthLayout';
-import { FONTS, SIZES, COLORS } from '../../constants';
-
-import { TextButton } from '../../components';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import OTPInputView from '@twotalltotems/react-native-otp-input';
+import React from 'react';
+import { Text, View } from 'react-native';
+
+import { TextButton } from '../../components';
+import { COLORS, FONTS, SIZES } from '../../constants';
 import { RootStackParamList } from '../../types';
+import AuthLayout from './AuthLayout';
 
 type OtpNavigationProp = StackNavigationProp<RootStackParamList, 'Otp'>;
 type OtpRouteProp = RouteProp<RootStackParamList, 'Otp'>;

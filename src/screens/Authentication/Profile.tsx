@@ -1,14 +1,13 @@
-import React from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
-
-import { FONTS, SIZES, COLORS, icons, images } from '../../constants';
-
-import { Header, IconButton } from '../../components';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../types';
-import { useAppSelector } from '../../redux/store/hooks';
+import React from 'react';
+import { Image, ScrollView, Text, View } from 'react-native';
+
+import { Header, IconButton } from '../../components';
+import { COLORS, FONTS, icons, images, SIZES } from '../../constants';
 import { userSelector } from '../../redux/slices/auth';
+import { useAppSelector } from '../../redux/store/hooks';
+import { RootStackParamList } from '../../types';
 
 type ProfileNavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
 type ProfileRouteProp = RouteProp<RootStackParamList, 'Profile'>;

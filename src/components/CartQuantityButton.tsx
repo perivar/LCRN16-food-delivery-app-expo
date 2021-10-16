@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-  View,
-  TouchableOpacity,
   Image,
-  Text,
-  StyleProp,
-  ViewStyle,
   ImageStyle,
+  StyleProp,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from 'react-native';
 
-import { COLORS, FONTS, SIZES, icons } from '../constants';
+import { COLORS, FONTS, icons, SIZES } from '../constants';
 
 interface ICartQuantityButton {
   containerStyle?: StyleProp<ViewStyle>;

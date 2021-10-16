@@ -1,18 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
+import '../lib/firebase';
+
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { ResponseType } from 'expo-auth-session';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import * as Google from 'expo-auth-session/providers/google';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import * as Crypto from 'expo-crypto';
 import Constants from 'expo-constants';
-import { ResponseType } from 'expo-auth-session';
-import firebase from '../lib/system/firebase';
-import '../lib/firebase';
-import { storageKey, removeItem } from '../lib/storage';
+import * as Crypto from 'expo-crypto';
+import * as WebBrowser from 'expo-web-browser';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert } from 'react-native';
+
 import Auth from '../lib/auth';
-import { useAppDispatch } from '../redux/store/hooks';
+import { removeItem, storageKey } from '../lib/storage';
+import firebase from '../lib/system/firebase';
 import { loginUser, logoutUser, User } from '../redux/slices/auth';
+import { useAppDispatch } from '../redux/store/hooks';
 
 const auth = new Auth();
 

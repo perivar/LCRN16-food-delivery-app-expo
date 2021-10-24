@@ -1,7 +1,6 @@
-import 'firebase/auth';
-import 'firebase/storage';
-import 'firebase/firestore';
+import 'firebase/compat/auth';
+import 'firebase/compat/storage';
+import 'firebase/compat/firestore';
 
-import firebase from 'firebase/app';
-
+import firebase from 'firebase/compat/app';
 export default firebase;

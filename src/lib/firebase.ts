@@ -1,5 +1,8 @@
+import { LogBox } from 'react-native';
+
 import { firebaseConfig } from '../config/firebase';
 import firebase from './system/firebase';
+LogBox.ignoreLogs(['@firebase/firestore:']);
 
 // Initialize Firebase
 if (!firebase.apps.length) {

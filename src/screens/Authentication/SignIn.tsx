@@ -1,8 +1,17 @@
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as AppleAuthentication from 'expo-apple-authentication';
+import {
+  AppleAuthenticationButton,
+  AppleAuthenticationButtonStyle,
+  AppleAuthenticationButtonType,
+} from 'expo-apple-authentication';
+import {
+  AuthCredential,
+  getAuth,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import React from 'react';
-import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 
 import {
   CustomSwitch,
@@ -11,9 +20,13 @@ import {
   TextIconButton,
 } from '../../components';
 import { COLORS, FONTS, icons, SIZES } from '../../constants';
-import useFirebaseAuth from '../../hooks/useFirebaseAuth';
+import useAppleAuthentication from '../../hooks/useAppleAuthentication';
+import useEmailPasswordAuthentication from '../../hooks/useEmailPasswordAuthentication';
+import useFacebookAuthentication from '../../hooks/useFacebookAuthentication';
+import useGoogleAuthentication from '../../hooks/useGoogleAuthentication';
 import { RootStackParamList } from '../../types';
 import { utils } from '../../utils';
+import loginWithCredential from '../../utils/loginWithCredential';
 import AuthLayout from './AuthLayout';
 
 type SignInNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
@@ -22,12 +35,65 @@ type SignInRouteProp = RouteProp<RootStackParamList, 'SignIn'>;
 const SignIn = () => {
   const navigation = useNavigation<SignInNavigationProp>();
 
-  const {
-    onAppleLogin,
-    onGoogleLogin,
-    onFacebookLogin,
-    onEmailAndPasswordLogin,
-  } = useFirebaseAuth();
+  // const {
+  //   onAppleLogin,
+  //   onGoogleLogin,
+  //   onFacebookLogin,
+  //   onEmailAndPasswordLogin,
+  // } = useFirebaseAuth();
+
+  const [googleAuthLoading, authWithGoogle] = useGoogleAuthentication();
+  const [appleAuthAvailable, authWithApple] = useAppleAuthentication();
+  const [facebookAuthAvailable, authWithFacebook] = useFacebookAuthentication();
+  const [authWithEmailPassword] = useEmailPasswordAuthentication();
+
+  async function login(credential: AuthCredential, data?: any) {
+    const user = await loginWithCredential(credential, data);
+    console.log('logged in user: ', user);
+    navigation.navigate('Home');
+  }
+
+  async function loginWithGoogle() {
+    try {
+      const [credential] = await authWithGoogle();
+      await login(credential);
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    }
+  }
+
+  async function loginWithApple() {
+    try {
+      const [credential, data] = await authWithApple();
+      await login(credential, data);
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    }
+  }
+
+  async function loginWithFacebook() {
+    try {
+      const [credential, data] = await authWithFacebook();
+      await login(credential, data);
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    }
+  }
+
+  async function loginWithEmailPassword(email: string, password: string) {
+    try {
+      // const credential = authWithEmailPassword(email, password);
+      // await login(credential);
+      const auth = getAuth();
+      const user = await signInWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    }
+  }
 
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
@@ -156,7 +222,8 @@ const SignIn = () => {
               ? COLORS.primary
               : COLORS.transparentPrimary,
           }}
-          onPress={() => onEmailAndPasswordLogin(email, password)}
+          // onPress={() => onEmailAndPasswordLogin(email, password)}
+          onPress={() => loginWithEmailPassword(email, password)}
         />
 
         {/* Sign Up */}
@@ -209,7 +276,8 @@ const SignIn = () => {
             marginLeft: SIZES.radius,
             color: COLORS.white,
           }}
-          onPress={onFacebookLogin}
+          // onPress={onFacebookLogin}
+          onPress={loginWithFacebook}
         />
 
         {/* Google */}
@@ -230,24 +298,22 @@ const SignIn = () => {
           labelStyle={{
             marginLeft: SIZES.radius,
           }}
-          onPress={onGoogleLogin}
+          // onPress={onGoogleLogin}
+          onPress={loginWithGoogle}
         />
 
-        {Platform.OS === 'ios' && (
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={
-              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-            }
-            buttonStyle={
-              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-            }
+        {/* {Platform.OS === 'ios' && ( */}
+        {appleAuthAvailable && (
+          <AppleAuthenticationButton
+            buttonType={AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={AppleAuthenticationButtonStyle.BLACK}
             cornerRadius={SIZES.radius}
             style={{
               height: 50,
               alignItems: 'center',
               marginTop: SIZES.radius,
             }}
-            onPress={onAppleLogin}
+            onPress={loginWithApple}
           />
         )}
       </View>

@@ -1,11 +1,25 @@
 import dayjs from 'dayjs';
+import {
+  createUserWithEmailAndPassword,
+  EmailAuthProvider,
+  getAuth,
+  onAuthStateChanged,
+  reauthenticateWithCredential,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
+  User,
+} from 'firebase/auth';
 
 import { getItem, removeItem, setItem, storageKey } from './storage';
-import firebase from './system/firebase';
 
-const initFirebaseAuth = (): Promise<firebase.User | null> => {
+const auth = getAuth();
+
+const initFirebaseAuth = (): Promise<User | null> => {
   return new Promise(resolve => {
-    var unsubscribe = firebase.auth().onAuthStateChanged(user => {
+    var unsubscribe = onAuthStateChanged(auth, user => {
       // user Object resolve
       resolve(user);
 
@@ -52,37 +66,37 @@ class Auth {
     return this.setSession(true);
   };
 
-  getCurrentUser = () => firebase.auth().currentUser;
+  getCurrentUser = () => auth.currentUser;
 
   // Notice Firebase automatically signs user in when their account is created
   doCreateUserWithEmailAndPassword = (email: string, password: string) =>
-    firebase.auth().createUserWithEmailAndPassword(email, password);
+    createUserWithEmailAndPassword(auth, email, password);
 
   doSignInWithEmailAndPassword = (email: string, password: string) =>
-    firebase.auth().signInWithEmailAndPassword(email, password);
+    signInWithEmailAndPassword(auth, email, password);
 
-  doPasswordReset = (email: string) =>
-    firebase.auth().sendPasswordResetEmail(email);
+  doPasswordReset = (email: string) => sendPasswordResetEmail(auth, email);
 
   doPasswordUpdate = async (password: string) => {
     if (this.getCurrentUser()) {
-      await this.getCurrentUser().updatePassword(password);
+      await updatePassword(this.getCurrentUser(), password);
     }
     throw Error('Failed updating password - not current user!');
   };
 
-  sendEmailVerification = () => this.getCurrentUser().sendEmailVerification();
+  sendEmailVerification = () => sendEmailVerification(this.getCurrentUser());
 
   reload = () => this.getCurrentUser().reload();
 
   reauthenticate = (email: string, password: string) =>
-    this.getCurrentUser().reauthenticateWithCredential(
-      firebase.auth.EmailAuthProvider.credential(email, password)
+    reauthenticateWithCredential(
+      this.getCurrentUser(),
+      EmailAuthProvider.credential(email, password)
     );
 
   // logout and remove user and token information from async storage
   logout = async () => {
-    await firebase.auth().signOut();
+    await signOut(auth);
 
     await removeItem(storageKey.AUTH_UID_KEY);
     await removeItem(storageKey.AUTH_ID_TOKEN_KEY);

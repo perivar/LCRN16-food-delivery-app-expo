@@ -9,12 +9,12 @@ import {
   NavigationContainer,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { ColorSchemeName } from 'react-native';
 
 import useFirebaseAuth from '../hooks/useFirebaseAuth';
-import firebase from '../lib/system/firebase';
 import CustomDrawer from '../navigation/CustomDrawer';
 import { loginUser, User, userSelector } from '../redux/slices/auth';
 import { useAppDispatch, useAppSelector } from '../redux/store/hooks';
@@ -54,8 +54,8 @@ const RootNavigator = () => {
   const { onLogout, setup } = useFirebaseAuth();
 
   useEffect(() => {
-    // onAuthStateChanged returns an unsubscriber
-    const unsubscribeAuth = firebase.auth().onAuthStateChanged(authUser => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, authUser => {
       console.log('AppNavigator - onAuthStateChanged');
       if (authUser) {
         const providerUser = authUser.providerData[0];
@@ -70,7 +70,7 @@ const RootNavigator = () => {
       }
     });
     // unsubscribe auth listener on unmount
-    return unsubscribeAuth;
+    return unsubscribe;
   }, []);
 
   if (!setup) {

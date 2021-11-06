@@ -1,4 +1,10 @@
-import firebase from './system/firebase';
+import {
+  collection,
+  Firestore,
+  getDocs,
+  limit,
+  query,
+} from 'firebase/firestore';
 
 export type AppConfig = {
   maintenance: boolean;
@@ -14,10 +20,9 @@ export const defaultAppConfig = (): AppConfig => ({
   supportVersion: '1.0.0',
 });
 
-export const getAppConfig = async (
-  db: firebase.firestore.Firestore
-): Promise<AppConfig> => {
-  const qs = await db.collection('appConfig').limit(1).get();
+export const getAppConfig = async (db: Firestore): Promise<AppConfig> => {
+  const first = query(collection(db, 'appConfig'), limit(1));
+  const qs = await getDocs(first);
 
   const records = qs.docs.map(elem => {
     return elem.data();

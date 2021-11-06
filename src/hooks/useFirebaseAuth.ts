@@ -7,16 +7,37 @@ import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
 import * as Crypto from 'expo-crypto';
 import * as WebBrowser from 'expo-web-browser';
+import {
+  EmailAuthProvider,
+  FacebookAuthProvider,
+  getAuth,
+  GoogleAuthProvider,
+  OAuthCredential,
+  OAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+  updateProfile,
+} from 'firebase/auth';
+import {
+  collection,
+  doc,
+  FieldValue,
+  getDoc,
+  getFirestore,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import Auth from '../lib/auth';
 import { removeItem, storageKey } from '../lib/storage';
-import firebase from '../lib/system/firebase';
 import { loginUser, logoutUser, User } from '../redux/slices/auth';
 import { useAppDispatch } from '../redux/store/hooks';
 
-const auth = new Auth();
+const auth = getAuth();
+const myAuth = new Auth();
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -39,16 +60,16 @@ const nonceGen = (length: number) => {
 export type UseFirebaseAuth = ReturnType<typeof useFirebaseAuth>;
 
 export interface UserCredentials {
-  createdAt: firebase.firestore.FieldValue;
-  updatedAt: firebase.firestore.FieldValue;
+  createdAt: FieldValue;
+  updatedAt: FieldValue;
   uid: string;
   displayName: string;
   email: string;
 }
 
 const useFirebaseAuth = (errorCallback?: () => void) => {
-  const database = firebase.firestore();
-  const currentUser = firebase.auth().currentUser;
+  const db = getFirestore();
+  const currentUser = auth.currentUser;
 
   const dispatch = useAppDispatch();
   const [setup, setSetup] = useState(false);
@@ -103,11 +124,11 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
   const setSession = useCallback(
     async (refresh = false) => {
-      const idToken = await auth.setSession(refresh);
+      const idToken = await myAuth.setSession(refresh);
       debug('useFirebaseAuth - setSession idToken:', idToken);
       return idToken;
     },
-    [auth.setSession]
+    [myAuth.setSession]
   );
 
   const createOrUpdateUser = (userInfo: User) => {
@@ -115,47 +136,34 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
       const email = userInfo.email;
       const id = email ?? currentUser?.uid;
 
-      const users = database.collection('users');
-      const now = firebase.firestore.FieldValue.serverTimestamp();
+      const userRef = doc(db, 'users', id);
+      const now = serverTimestamp();
 
-      users
-        .doc(id)
-        .get()
-        .then(doc => {
-          if (doc.exists) {
-            console.log('User already exist, updating updatedAt...');
+      getDoc(userRef).then(userDoc => {
+        if (userDoc.exists) {
+          console.log('User already exist, updating updatedAt...');
 
-            users
-              .doc(id)
-              .update({
-                updatedAt: now,
-              })
-              .then(() => {
-                console.log('Successfully updated user');
-              })
-              .catch(error => {
-                Alert.alert('Updating user failed', error);
-              });
-          } else {
-            console.log('User does not exist, creating ...');
+          updateDoc(userRef, {
+            updatedAt: now,
+          }).then(() => {
+            console.log('Successfully updated user');
+          });
+        } else {
+          console.log('User does not exist, creating ...');
 
-            const userCredentials: UserCredentials = {
-              ...userInfo,
-              createdAt: now,
-              updatedAt: now,
-            };
+          const userCredentials: UserCredentials = {
+            ...userInfo,
+            createdAt: now,
+            updatedAt: now,
+          };
 
-            users
-              .doc(id)
-              .set(userCredentials)
-              .then(() => {
-                console.log('Successfully added user');
-              })
-              .catch(error => {
-                Alert.alert('Creating user failed', error);
-              });
-          }
-        });
+          const newUserRef = doc(collection(db, 'users', id));
+
+          setDoc(newUserRef, userCredentials).then(() => {
+            console.log('Successfully added user');
+          });
+        }
+      });
     } catch (error) {
       console.log(error);
       errorCallback?.();
@@ -163,15 +171,12 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
   };
 
   const firebaseLogin = useCallback(
-    async (credential: firebase.auth.OAuthCredential) => {
+    async (credential: OAuthCredential) => {
       debug('useFirebaseAuth - firebaseLogin - credential:', credential);
-      const data = await firebase
-        .auth()
-        .signInWithCredential(credential)
-        .catch(error => {
-          debug(error);
-          Alert.alert('Login failed', error);
-        });
+      const data = await signInWithCredential(auth, credential).catch(error => {
+        debug(error);
+        Alert.alert('Login failed', error);
+      });
 
       if (data) {
         debug('useFirebaseAuth - firebaseLogin - data.user:', data.user);
@@ -197,7 +202,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
     if (googleResponse?.type === 'success') {
       const { id_token } = googleResponse.params;
       debug('useFirebaseAuth - googleResponse - id_token:', id_token);
-      const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
+      const credential = GoogleAuthProvider.credential(id_token);
       firebaseLogin(credential);
     } else if (googleResponse?.type === 'error') {
       debug('google response error:', googleResponse);
@@ -210,8 +215,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
     if (facebookResponse?.type === 'success') {
       const { access_token } = facebookResponse.params;
       debug('useFirebaseAuth - facebookResponse - access_token:', access_token);
-      const credential =
-        firebase.auth.FacebookAuthProvider.credential(access_token);
+      const credential = FacebookAuthProvider.credential(access_token);
       firebaseLogin(credential);
     } else if (facebookResponse?.type === 'error') {
       debug('facebook response error:', facebookResponse);
@@ -237,7 +241,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
       });
       debug('useFirebaseAuth - apple result:', result);
 
-      const provider = new firebase.auth.OAuthProvider('apple.com');
+      const provider = new OAuthProvider('apple.com');
       const credential = provider.credential({
         idToken: result.identityToken || '',
         rawNonce: nonce,
@@ -252,14 +256,14 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
   const onEmailAndPasswordSignup = useCallback(
     (name: string, email: string, password: string) => {
-      auth
+      myAuth
         .doCreateUserWithEmailAndPassword(email, password)
         .then(result => {
           // Notice Firebase automatically signs user in when their account is created
           // so dispatch loginUser is not needed
           debug('useFirebaseAuth - onEmailAndPasswordSignup:', result);
-          result.user
-            .updateProfile({ displayName: name })
+
+          updateProfile(result.user, { displayName: name })
             .then(() => {
               // User account created & signed in!
               // const providerUser = result.user;
@@ -271,10 +275,10 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
               // dispatch(loginUser(userInfo));
 
               // login using OAuthCredential, and create user if it doesn't exist
-              var credential = firebase.auth.EmailAuthProvider.credential(
+              var credential = EmailAuthProvider.credential(
                 email,
                 password
-              );
+              ) as OAuthCredential;
               firebaseLogin(credential);
             })
             .catch(err => {
@@ -304,7 +308,7 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
 
   const onEmailAndPasswordLogin = useCallback(
     (email: string, password: string) => {
-      auth
+      myAuth
         .doSignInWithEmailAndPassword(email, password)
         .then(data => {
           // const providerUser = data.user.providerData[0];
@@ -316,10 +320,10 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
           // dispatch(loginUser(userInfo));
 
           // login using OAuthCredential, and create user if it doesn't exist
-          var credential = firebase.auth.EmailAuthProvider.credential(
+          var credential = EmailAuthProvider.credential(
             email,
             password
-          );
+          ) as OAuthCredential;
           firebaseLogin(credential);
         })
         .catch(error => {
@@ -343,13 +347,13 @@ const useFirebaseAuth = (errorCallback?: () => void) => {
   );
 
   const onLogout = useCallback(async () => {
-    await auth.logout();
+    await myAuth.logout();
     await removeItem(storageKey.USER_ID_KEY);
     dispatch(logoutUser());
   }, [logoutUser]);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(() => {
+    const unsubscribe = onAuthStateChanged(auth, _ => {
       debug('useFirebaseAuth - onAuthStateChanged');
       setSetup(true);
     });

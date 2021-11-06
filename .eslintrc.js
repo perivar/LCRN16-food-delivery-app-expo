@@ -22,6 +22,9 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     'unused-imports/no-unused-imports-ts': 'warn',
     'simple-import-sort/imports': 'error',
+    // have to disable since eslint reports errors on enums
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
   },
   overrides: [
     {

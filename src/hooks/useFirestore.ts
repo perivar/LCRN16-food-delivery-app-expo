@@ -1,9 +1,27 @@
 import '../lib/firebase';
 
+import { getAuth } from '@firebase/auth';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  DocumentData,
+  DocumentSnapshot,
+  FieldValue,
+  getDoc,
+  getDocs,
+  getFirestore,
+  increment,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
+
 import { ICartItem } from '../constants/types';
-import firebase from '../lib/system/firebase';
 import { User } from '../redux/slices/auth';
-import { debug, UserCredentials } from './useFirebaseAuth';
+import { UserCredentials } from './useFirebaseAuth';
 
 export type UseFirestore = ReturnType<typeof useFirestore>;
 
@@ -17,68 +35,75 @@ export interface Order {
   billingAddress: string;
   comments: string;
   completed: boolean;
-  createdAt: firebase.firestore.FieldValue;
+  createdAt: FieldValue;
 }
 
 const useFirestore = (errorCallback?: () => void) => {
-  const database = firebase.firestore();
-  const currentUser = firebase.auth().currentUser;
+  const auth = getAuth();
+  const db = getFirestore();
+  const currentUser = auth.currentUser;
 
   const addLike = (creatorId: string, postId: string, email: string) => {
-    const id = email ?? currentUser?.uid;
+    try {
+      const id = email ?? currentUser?.uid;
 
-    const userPosts = database
-      .collection('posts')
-      .doc(creatorId)
-      .collection('userPosts')
-      .doc(postId);
+      const likeRef = doc(
+        db,
+        'posts',
+        creatorId,
+        'userPosts',
+        postId,
+        'likes',
+        id
+      );
 
-    // using set to create the field if it doesn't exist yet
-    userPosts
-      .collection('likes')
-      .doc(id)
-      .set({})
-      .then(() => {
-        userPosts.set(
+      // using set with merge to create the field if it doesn't exist yet
+      setDoc(likeRef, {}, { merge: true }).then(() => {
+        const userPostRef = doc(db, 'posts', creatorId, 'userPosts', postId);
+        // and increment count
+        setDoc(
+          userPostRef,
           {
-            likesCount: firebase.firestore.FieldValue.increment(1),
+            likesCount: increment(1),
           },
-          {
-            merge: true,
-          }
-        );
-        console.log('Successfully added like');
-      })
-      .catch(error => {
-        debug(error);
-        errorCallback?.();
+          { merge: true }
+        ).then(() => {
+          console.log('Successfully added like');
+        });
       });
+    } catch (error) {
+      console.error(error);
+      errorCallback?.();
+    }
   };
 
   const deleteLike = (creatorId: string, postId: string, email: string) => {
-    const id = email ?? currentUser?.uid;
+    try {
+      const id = email ?? currentUser?.uid;
 
-    const userPosts = database
-      .collection('posts')
-      .doc(creatorId)
-      .collection('userPosts')
-      .doc(postId);
-
-    // using update to throw error if the field doesn't exist yet
-    userPosts
-      .collection('likes')
-      .doc(id)
-      .delete()
-      .then(() => {
-        userPosts.update({
-          likesCount: firebase.firestore.FieldValue.increment(-1),
+      const likeRef = doc(
+        db,
+        'posts',
+        creatorId,
+        'userPosts',
+        postId,
+        'likes',
+        id
+      );
+      // using update to throw error if the field doesn't exist yet
+      deleteDoc(likeRef).then(() => {
+        const userPostRef = doc(db, 'posts', creatorId, 'userPosts', postId);
+        // and decrement count
+        updateDoc(userPostRef, {
+          likesCount: increment(-1),
+        }).then(() => {
+          console.log('Successfully removed like');
         });
-        console.log('Successfully removed like');
-      })
-      .catch(error => {
-        debug(error);
-        errorCallback?.();
       });
+    } catch (error) {
+      console.error(error);
+      errorCallback?.();
+    }
   };
 
   // TODO: I believe this is a very NON-performant way of getting likes
@@ -92,72 +117,65 @@ const useFirestore = (errorCallback?: () => void) => {
   ) => {
     const id = email ?? currentUser?.uid;
 
-    return database
-      .collection('posts')
-      .doc(creatorId)
-      .collection('userPosts')
-      .doc(postId)
-      .collection('likes')
-      .doc(id)
-      .onSnapshot(
-        doc => {
-          setIsLiked(false);
-          if (doc.exists) {
-            // the document is empty (using .set({}) so exist is enough)
-            setIsLiked(true);
-          }
-        },
-        error => {
-          console.log(error);
-          errorCallback?.();
+    const likeRef = doc(
+      db,
+      'posts',
+      creatorId,
+      'userPosts',
+      postId,
+      'likes',
+      id
+    );
+
+    const unsubscribe = onSnapshot(
+      likeRef,
+      likeDoc => {
+        setIsLiked(false);
+        if (likeDoc.exists()) {
+          // console.log(creatorId, postId, likeDoc.id);
+          // the document is empty (using setDoc with {} so exist is enough)
+          setIsLiked(true);
         }
-      );
+      },
+      error => {
+        console.error(error);
+        errorCallback?.();
+      }
+    );
+    return unsubscribe;
   };
 
   const addToFavorites = (productId: string, email: string) => {
-    const id = email ?? currentUser?.uid;
-
     try {
-      const document = database
-        .collection('users')
-        .doc(id)
-        .collection('favorites')
-        .doc(productId)
-        .get();
+      const id = email ?? currentUser?.uid;
 
-      document.then(doc => {
-        if (doc.exists) {
+      const favouriteRef = doc(db, 'users', id, 'favorites', productId);
+      getDoc(favouriteRef).then(favouriteDoc => {
+        if (favouriteDoc.exists()) {
           console.log('Product already in favorites');
         } else {
-          database
-            .collection('users')
-            .doc(id)
-            .collection('favorites')
-            .doc(productId)
-            .set({});
-          console.log('Successfully added to favorites');
+          // using set to create the field if it doesn't exist yet
+          setDoc(favouriteRef, {}).then(() => {
+            console.log('Successfully added to favorites');
+          });
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       errorCallback?.();
     }
   };
 
   const deleteFromFavorites = (productId: string, email: string) => {
-    const id = email ?? currentUser?.uid;
-
     try {
-      database
-        .collection('users')
-        .doc(id)
-        .collection('favorites')
-        .doc(productId)
-        .delete();
+      const id = email ?? currentUser?.uid;
 
-      console.log('Product removed from favorites');
+      const favouriteRef = doc(db, 'users', id, 'favorites', productId);
+      deleteDoc(favouriteRef).then(() => {
+        console.log('Product removed from favorites');
+      });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       errorCallback?.();
     }
   };
@@ -169,36 +187,37 @@ const useFirestore = (errorCallback?: () => void) => {
     billingAddress: string,
     comments?: string
   ) => {
-    const now = firebase.firestore.FieldValue.serverTimestamp();
-
-    const newOrder: Order = {
-      uid: user.uid,
-      email: user.email,
-      products: cart,
-      deliveryAddress: deliveryAddress,
-      billingAddress: billingAddress,
-      comments: comments ?? '',
-      completed: false,
-      createdAt: now,
-    };
-
     try {
+      const now = serverTimestamp();
+
+      const newOrder: Order = {
+        uid: user.uid,
+        email: user.email,
+        products: cart,
+        deliveryAddress: deliveryAddress,
+        billingAddress: billingAddress,
+        comments: comments ?? '',
+        completed: false,
+        createdAt: now,
+      };
+
       const responseOrder: Order = {
         ...newOrder,
       };
-      const document = await database.collection('orders').add(newOrder);
+
+      const document = await addDoc(collection(db, 'orders'), newOrder);
+
       const { id: orderId } = document;
       responseOrder.id = orderId;
-      await database
-        .collection('users')
-        .doc(`${user.email}`)
-        .collection('orders')
-        .add({ orderId });
+
+      await addDoc(collection(db, 'users', `${user.email}`, 'orders'), {
+        orderId,
+      });
 
       console.log(`Order ${orderId} placed successfully`);
       return responseOrder;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
   };
@@ -206,10 +225,8 @@ const useFirestore = (errorCallback?: () => void) => {
   const getAllOrders = async () => {
     try {
       let orders: Order[] = [];
-      const ordersSnapshots = await database.collection('orders').get();
-      const usersPromises: Promise<
-        firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
-      >[] = [];
+      const ordersSnapshots = await getDocs(collection(db, 'orders'));
+      const usersPromises: Promise<DocumentSnapshot<DocumentData>>[] = [];
 
       ordersSnapshots.forEach(orderSnapshot => {
         orders.push({
@@ -224,7 +241,7 @@ const useFirestore = (errorCallback?: () => void) => {
           createdAt: orderSnapshot.data().createdAt,
         });
         usersPromises.push(
-          database.doc(`/users/${orderSnapshot.data().email}`).get()
+          getDoc(doc(db, `/users/${orderSnapshot.data().email}`))
         );
       });
 
@@ -239,24 +256,22 @@ const useFirestore = (errorCallback?: () => void) => {
 
       return orders;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
   };
 
   const getOrderDetails = async (orderId: string) => {
     try {
-      const orderDocument = await database.doc(`/orders/${orderId}`).get();
+      const orderDocument = await getDoc(doc(db, `/orders/${orderId}`));
 
-      if (orderDocument.exists) {
+      if (orderDocument.exists()) {
         let orderData = orderDocument.data() as Order;
         orderData.id = orderDocument.id;
-        const productsPromises: Promise<
-          firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
-        >[] = [];
+        const productsPromises: Promise<DocumentSnapshot<DocumentData>>[] = [];
 
         orderData.products.forEach(product => {
-          const promise = database.doc(`/products/${product.productId}`).get();
+          const promise = getDoc(doc(db, `/products/${product.productId}`));
           productsPromises.push(promise);
         });
 
@@ -291,30 +306,29 @@ const useFirestore = (errorCallback?: () => void) => {
 
   const deleteOrder = async (orderId: string) => {
     try {
-      const documentSnapshot = await database.doc(`/orders/${orderId}`).get();
+      const orderDocument = await getDoc(doc(db, `/orders/${orderId}`));
 
-      if (!documentSnapshot.exists) {
+      if (!orderDocument.exists()) {
         console.log('Order not found');
         return;
       }
 
-      await database.doc(`/orders/${orderId}`).delete();
-
+      await deleteDoc(doc(db, `/orders/${orderId}`));
       console.log(`Order ${orderId} deleted successfully`);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
   };
 
   const updateOrder = async (order: Order) => {
-    if (order.id || order.createdAt || order.products) {
-      console.log('Not allowed to edit');
-      return;
-    }
-
     try {
-      await database.collection('orders').doc(`${order.id}`).update(order);
+      if (order.id || order.createdAt || order.products) {
+        console.log('Not allowed to edit');
+        return;
+      }
+
+      await updateDoc(doc(db, `/orders/${order.id}`), { order });
       console.log(`Order ${order.id} updated successfully`);
     } catch (error) {
       console.error(error);
